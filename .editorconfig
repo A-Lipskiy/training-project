@@ -1,0 +1,4 @@
+[*.{tsx,ts,js,jsx,json,css,yml}]
+quote_type = single
+indent_style = space
+indent_size = 2
