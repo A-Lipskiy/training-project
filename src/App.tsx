@@ -17,7 +17,7 @@ function App(): JSX.Element {
           rel="noopener noreferrer"
         >
           Learn React
-          
+
         </a>
       </header>
     </div>
