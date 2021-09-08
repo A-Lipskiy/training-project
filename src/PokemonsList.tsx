@@ -3,10 +3,10 @@ import useIntersectionObserver from './useIntersectionObserver';
 import { useState, useRef, useEffect } from 'react';
 
 const pageSize = 2;
+
 export default function PokemonsList(): JSX.Element {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-
   const isBottomVisible: unknown = useIntersectionObserver(ref, {
     threshold: 1,
   });

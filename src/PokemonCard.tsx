@@ -44,7 +44,7 @@ export default function PokemonCard({ id }: { id: number }): JSX.Element {
   }, []);
   return (
     <div>
-      <p style={{ backgroundColor: 'orange', width: '100%', height: '250px' }}>
+      <p>
         <span>Name: {data.name}</span>
         <br></br>
         <span>Height: {data.height}</span>
@@ -55,8 +55,6 @@ export default function PokemonCard({ id }: { id: number }): JSX.Element {
         <br></br>
         <img
           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`}
-          alt={`${data.name} image`}
-          style={{ width: '70%', height: '70%' }}
         ></img>
       </p>
     </div>
