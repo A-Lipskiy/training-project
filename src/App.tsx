@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useState, useRef, useEffect } from 'react';
 import './App.css';
+import PokemonCard from './PokemonCard';
+import useIntersectionObserver from './useIntersectionObserver';
 
-function App(): JSX.Element {
+const pageSize = 2;
+export default function App(): JSX.Element {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+
+  const isBottomVisible = useIntersectionObserver(ref, {
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (isBottomVisible) setCount(count + 1);
+  }, [isBottomVisible]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {(() => {
+        const children = [];
+        for (let i = 1; i <= count * pageSize; i++) {
+          children.push(<PokemonCard key={i} id={i} />);
+        }
+        return children;
+      })()}
+      <div ref={ref} style={{ width: '100%', height: '5px' }}>
+        Bottom
+      </div>
     </div>
   );
 }
-
-export default App;
