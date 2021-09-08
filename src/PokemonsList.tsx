@@ -16,7 +16,7 @@ export default function PokemonsList(): JSX.Element {
   }, [isBottomVisible]);
 
   return (
-    <div className="App">
+    <div>
       {(() => {
         const children = [];
         for (let i = 1; i <= count * pageSize; i++) {
