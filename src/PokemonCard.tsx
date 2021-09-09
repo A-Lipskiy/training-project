@@ -6,14 +6,15 @@ type PokeResponse = {
   height: number;
   weight: number;
   base_experience: number;
+  sprites: { other: { dream_world: { front_default: string } } };
 };
 
 async function fetchPokemon(
-  id: number,
+  name: string,
   onSetData: (pokemon: PokeResponse) => void
 ) {
   try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
     const rJSON: unknown = await response.json();
     const guard = (rJSON: unknown): rJSON is PokeResponse =>
       typeof rJSON === 'object' &&
@@ -28,6 +29,7 @@ async function fetchPokemon(
         height: rJSON.height,
         weight: rJSON.weight,
         base_experience: rJSON.base_experience,
+        sprites: rJSON.sprites,
       });
     }
   } catch (e) {
@@ -36,26 +38,35 @@ async function fetchPokemon(
 }
 
 const useFetchPokemon = (
-  id: number | undefined
+  name: string | undefined
 ): { isLoading: boolean; pokemon: PokeResponse | undefined } => {
   const [isLoading, setIsLoading] = useState(true);
   const [pokemon, setPokemon] = useState<PokeResponse | undefined>();
 
   useEffect(() => {
-    if (id) {
+    let isUnmounted = false;
+    if (name) {
       setIsLoading(true);
-      fetchPokemon(id, (poke) => {
+      fetchPokemon(name, (poke) => {
+        if (isUnmounted) return;
         setPokemon(poke);
         setIsLoading(false);
       });
     }
-  }, [id]);
+    return () => {
+      isUnmounted = true;
+    };
+  }, [name]);
 
   return { isLoading, pokemon };
 };
 
-export function PokemonCard({ id }: { id: number }): JSX.Element {
-  const { isLoading, pokemon } = useFetchPokemon(id);
+export function PokemonCard({
+  name,
+}: {
+  name: string | undefined;
+}): JSX.Element {
+  const { isLoading, pokemon } = useFetchPokemon(name);
 
   if (isLoading || !pokemon)
     return (
@@ -74,9 +85,7 @@ export function PokemonCard({ id }: { id: number }): JSX.Element {
       <br></br>
       <span>Base experience: {pokemon.base_experience}</span>
       <br></br>
-      <img
-        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`}
-      ></img>
+      <img src={pokemon.sprites.other.dream_world.front_default}></img>
     </div>
   );
 }
