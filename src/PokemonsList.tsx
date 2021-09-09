@@ -2,7 +2,7 @@ import { PokemonCard } from './PokemonCard';
 import useIntersectionObserver from './useIntersectionObserver';
 import { useState, useRef, useEffect } from 'react';
 
-const pageSize = 4;
+const pageSize = Math.round(window.innerHeight / 300) + 1;
 
 export function PokemonsList(): JSX.Element {
   const [pageNumber, setPageNumber] = useState(0);

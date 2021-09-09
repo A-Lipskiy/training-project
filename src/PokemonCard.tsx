@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BallSpinner } from 'react-spinners-kit';
 
 type PokeResponse = {
   name: string;
@@ -56,7 +57,12 @@ const useFetchPokemon = (
 export function PokemonCard({ id }: { id: number }): JSX.Element {
   const { isLoading, pokemon } = useFetchPokemon(id);
 
-  if (isLoading || !pokemon) return <div>LOADING!</div>;
+  if (isLoading || !pokemon)
+    return (
+      <div className="cardWrapper">
+        <BallSpinner size={200} color="#514964" />
+      </div>
+    );
 
   return (
     <div className="cardWrapper">
