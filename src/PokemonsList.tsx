@@ -53,7 +53,10 @@ export function PokemonsList(): JSX.Element {
         for (let i = 0; i <= pageNumber * pageSize; i++) {
           if (pokemons !== undefined && pokemons.results[i]) {
             children.push(
-              <PokemonCard key={i} name={pokemons.results[i].name} />
+              <PokemonCard
+                key={pokemons.results[i].name}
+                name={pokemons.results[i].name}
+              />
             );
           }
         }
