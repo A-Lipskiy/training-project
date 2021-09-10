@@ -2,7 +2,7 @@ import { PokemonCard } from './PokemonCard';
 import useIntersectionObserver from './useIntersectionObserver';
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-const truePageSize = 20;
+const truePageSize = 10;
 
 const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
@@ -20,26 +20,23 @@ export function PokemonsList(): JSX.Element {
     setCurentLastPage((page) => page + 1);
   }, []);
 
-  useIntersectionObserver(bottomRef, pages.length, updatePageCount, 1);
-
-  console.log({ pagesToUpload, curentLastPage });
+  useIntersectionObserver(bottomRef, updatePageCount, 0);
 
   useEffect(() => {
-    console.log({ curentLastPage, length: pages.length, initialPageCount });
     const pagesToUpload = new Array<number>(curentLastPage - pages.length)
       .fill(pages.length)
       .map((length, index) => length + index);
 
-    console.log({ dif: curentLastPage - pages.length });
     setPagesToUpload(pagesToUpload);
   }, [curentLastPage, pages]);
 
   useEffect(() => {
     async function fetchPokemons(pageNumber: number) {
-      console.log(pageNumber);
       try {
         const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?offset=${pageNumber}&limit=${truePageSize}`
+          `https://pokeapi.co/api/v2/pokemon?offset=${
+            pageNumber * truePageSize
+          }&limit=${truePageSize}`
         );
         const rJSON: unknown = await response.json();
         const guard = (rJSON: unknown): rJSON is PokeListResponse =>
@@ -80,25 +77,29 @@ export function PokemonsList(): JSX.Element {
             if (result[pageNumber]) result[pageNumber] = pokemons;
             else result.push(pokemons);
           }
+
           return result;
         });
       } catch (e) {
         console.log({ e });
       }
     };
-
     fetchPages();
   }, [pagesToUpload]);
 
-  const pokemons = pages.flat().flatMap((pokemon) => pokemon.results);
+  const pokemons = pages
+    .flat()
+    .flatMap((pokemon) => pokemon.results)
+    .map((pokemon) => <PokemonCard key={pokemon.name} name={pokemon.name} />);
 
-  return (
-    <div>
-      {pokemons.map((pokemon) => (
-        <PokemonCard key={pokemon.name} name={pokemon.name} />
-      ))}
-
-      <div ref={bottomRef} className="refElement" />
-    </div>
-  );
+  if (pages.length * truePageSize < pages[0]?.count || pages[0] === undefined) {
+    return (
+      <div>
+        {pokemons}
+        <div ref={bottomRef} className="bottomRefElement" />
+      </div>
+    );
+  } else {
+    return <div>{pokemons}</div>;
+  }
 }

@@ -2,7 +2,6 @@ import { RefObject, useEffect, useState } from 'react';
 
 function useIntersectionObserver(
   elementRef: RefObject<Element>,
-  listLength: number,
   onIntersection: () => void,
   threshold = 0
 ): void {
@@ -20,7 +19,9 @@ function useIntersectionObserver(
   }, [elementRef, threshold]);
 
   useEffect(() => {
-    if (entry?.isIntersecting) onIntersection();
-  }, [listLength, entry, onIntersection]);
+    if (entry?.isIntersecting) {
+      onIntersection();
+    }
+  }, [entry?.isIntersecting, onIntersection]);
 }
 export default useIntersectionObserver;
