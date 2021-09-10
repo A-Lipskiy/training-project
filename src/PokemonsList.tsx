@@ -1,15 +1,13 @@
 import { PokemonCard } from './PokemonCard';
-import useIntersectionObserver from './useIntersectionObserver';
+import { useIntersectionObserver } from './useIntersectionObserver';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { usefetchPokemonsList } from './useFetchPokemonsList';
+import type { PokeListResponse } from './pokemonTypes.js';
 
 const truePageSize = 10;
 
 const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
-type PokeListResponse = {
-  count: number;
-  results: Array<{ name: string; url: string }>;
-};
 
 export function PokemonsList(): JSX.Element {
   const [curentLastPage, setCurentLastPage] = useState(initialPageCount);
@@ -31,36 +29,10 @@ export function PokemonsList(): JSX.Element {
   }, [curentLastPage, pages]);
 
   useEffect(() => {
-    async function fetchPokemons(pageNumber: number) {
-      try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?offset=${
-            pageNumber * truePageSize
-          }&limit=${truePageSize}`
-        );
-        const rJSON: unknown = await response.json();
-        const guard = (rJSON: unknown): rJSON is PokeListResponse =>
-          typeof rJSON === 'object' &&
-          rJSON !== null &&
-          'count' in rJSON &&
-          'results' in rJSON;
-        if (guard(rJSON)) {
-          const page = {
-            count: rJSON.count,
-            results: rJSON.results,
-          };
-          return page;
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      throw new Error(`Can't fetch page ${pageNumber}`);
-    }
-
     const fetchPages = async () => {
       try {
         const pokemonsPagesPromise = pagesToUpload.map(async (pageNumber) => {
-          const pokemons = await fetchPokemons(pageNumber);
+          const pokemons = await usefetchPokemonsList(pageNumber);
 
           return {
             pageNumber,
@@ -96,7 +68,7 @@ export function PokemonsList(): JSX.Element {
     return (
       <div>
         {pokemons}
-        <div ref={bottomRef} className="bottomRefElement" />
+        <div ref={bottomRef} className="bottom-ref-element" />
       </div>
     );
   } else {
