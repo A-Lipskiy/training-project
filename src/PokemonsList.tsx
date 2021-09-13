@@ -34,12 +34,12 @@ export function PokemonsList(): JSX.Element {
 
   if (pages.length * truePageSize < pages[0]?.count || pages[0] === undefined) {
     return (
-      <div>
+      <div className="pokemon-list-wrapper">
         {pokemons}
         <div ref={bottomRef} className="bottom-ref-element" />
       </div>
     );
   } else {
-    return <div>{pokemons}</div>;
+    return <div className="pokemon-list-wrapper">{pokemons}</div>;
   }
 }
