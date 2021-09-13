@@ -29,7 +29,6 @@ export function PokemonsList(): JSX.Element {
   );
 
   const pokemons = pages
-    .flat()
     .flatMap((pokemon) => pokemon.results)
     .map((pokemon) => <PokemonCard key={pokemon.name} name={pokemon.name} />);
 
