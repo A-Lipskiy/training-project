@@ -1,10 +1,10 @@
 import { PokemonCard } from './PokemonCard';
 import { useIntersectionObserver } from './useIntersectionObserver';
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { usefetchPokemonsList } from './useFetchPokemonsList';
+import { useState, useRef, useCallback } from 'react';
+import { useFetchPokemonsPages } from './useFetchPokemonsPages';
 import type { PokeListResponse } from './pokemonTypes.js';
 
-const truePageSize = 10;
+export const truePageSize = 10;
 
 const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
@@ -20,44 +20,13 @@ export function PokemonsList(): JSX.Element {
 
   useIntersectionObserver(bottomRef, updatePageCount, 0);
 
-  useEffect(() => {
-    const pagesToUpload = new Array<number>(curentLastPage - pages.length)
-      .fill(pages.length)
-      .map((length, index) => length + index);
-
-    setPagesToUpload(pagesToUpload);
-  }, [curentLastPage, pages]);
-
-  useEffect(() => {
-    const fetchPages = async () => {
-      try {
-        const pokemonsPagesPromise = pagesToUpload.map(async (pageNumber) => {
-          const pokemons = await usefetchPokemonsList(pageNumber);
-
-          return {
-            pageNumber,
-            pokemons,
-          };
-        });
-
-        const pokemonsPages = await Promise.all(pokemonsPagesPromise);
-        if (pagesToUpload.length === 0) return;
-        setPages((oldPages) => {
-          const result = [...oldPages];
-
-          for (const { pokemons, pageNumber } of pokemonsPages) {
-            if (result[pageNumber]) result[pageNumber] = pokemons;
-            else result.push(pokemons);
-          }
-
-          return result;
-        });
-      } catch (e) {
-        console.log({ e });
-      }
-    };
-    fetchPages();
-  }, [pagesToUpload]);
+  useFetchPokemonsPages(
+    pagesToUpload,
+    setPages,
+    curentLastPage,
+    pages,
+    setPagesToUpload
+  );
 
   const pokemons = pages
     .flat()
