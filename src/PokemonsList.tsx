@@ -9,12 +9,20 @@ export const truePageSize = 10;
 const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
 
-export function PokemonsList(): JSX.Element {
+type Props = {
+  selectedPokemons: string[];
+  setSelectedPokemons: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export function PokemonsList({
+  selectedPokemons,
+  setSelectedPokemons,
+}: Props): JSX.Element {
   const [curentLastPage, setCurentLastPage] = useState(initialPageCount);
   const [pagesToUpload, setPagesToUpload] = useState<number[]>([]);
   const [pages, setPages] = useState<PokeListResponse[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [selectedPokemons, setSelectedPokemons] = useState<string[]>([]);
+
   const updatePageCount = useCallback(() => {
     setCurentLastPage((page) => page + 1);
   }, []);
@@ -28,6 +36,7 @@ export function PokemonsList(): JSX.Element {
     pages,
     setPagesToUpload
   );
+
   function handleClick(name: string): void {
     const indexInSelectedPokemons = selectedPokemons.indexOf(name);
     if (indexInSelectedPokemons !== -1) {
@@ -53,12 +62,12 @@ export function PokemonsList(): JSX.Element {
   }
   const pokemons = pages
     .flatMap((pokemon) => pokemon.results)
-    .map((pokemon) => (
+    .map(({ name }) => (
       <PokemonCard
-        key={pokemon.name}
-        name={pokemon.name}
-        isSelected={selectedPokemons.includes(pokemon.name)}
-        onClick={() => handleClick(pokemon.name)}
+        key={name}
+        name={name}
+        isSelected={selectedPokemons.includes(name)}
+        onClick={() => handleClick(name)}
       />
     ));
 
