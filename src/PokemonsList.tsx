@@ -9,11 +9,20 @@ export const truePageSize = 10;
 const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
 
-export function PokemonsList(): JSX.Element {
+type Props = {
+  selectedPokemons: string[];
+  onChange: (pokemons: string[]) => void;
+};
+
+export function PokemonsList({
+  selectedPokemons,
+  onChange,
+}: Props): JSX.Element {
   const [curentLastPage, setCurentLastPage] = useState(initialPageCount);
   const [pagesToUpload, setPagesToUpload] = useState<number[]>([]);
   const [pages, setPages] = useState<PokeListResponse[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
+
   const updatePageCount = useCallback(() => {
     setCurentLastPage((page) => page + 1);
   }, []);
@@ -28,18 +37,38 @@ export function PokemonsList(): JSX.Element {
     setPagesToUpload
   );
 
+  function handleClick(name: string): void {
+    const indexInSelectedPokemons = selectedPokemons.indexOf(name);
+    const newSelectedPokemons = [...selectedPokemons];
+    if (indexInSelectedPokemons > -1) {
+      newSelectedPokemons.splice(indexInSelectedPokemons, 1);
+    } else {
+      newSelectedPokemons.push(name);
+      if (newSelectedPokemons.length > 2) {
+        newSelectedPokemons.shift();
+      }
+    }
+    onChange(newSelectedPokemons);
+  }
   const pokemons = pages
     .flatMap((pokemon) => pokemon.results)
-    .map((pokemon) => <PokemonCard key={pokemon.name} name={pokemon.name} />);
+    .map(({ name }) => (
+      <PokemonCard
+        key={name}
+        name={name}
+        isSelected={selectedPokemons.includes(name)}
+        onClick={() => handleClick(name)}
+      />
+    ));
 
   if (pages.length * truePageSize < pages[0]?.count || pages[0] === undefined) {
     return (
-      <div>
+      <div className="pokemon-list-wrapper">
         {pokemons}
         <div ref={bottomRef} className="bottom-ref-element" />
       </div>
     );
   } else {
-    return <div>{pokemons}</div>;
+    return <div className="pokemon-list-wrapper">{pokemons}</div>;
   }
 }
