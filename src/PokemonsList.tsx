@@ -11,12 +11,12 @@ const initialPageCount =
 
 type Props = {
   selectedPokemons: string[];
-  setSelectedPokemons: React.Dispatch<React.SetStateAction<string[]>>;
+  onChange: (pokemons: string[]) => void;
 };
 
 export function PokemonsList({
   selectedPokemons,
-  setSelectedPokemons,
+  onChange,
 }: Props): JSX.Element {
   const [curentLastPage, setCurentLastPage] = useState(initialPageCount);
   const [pagesToUpload, setPagesToUpload] = useState<number[]>([]);
@@ -39,26 +39,16 @@ export function PokemonsList({
 
   function handleClick(name: string): void {
     const indexInSelectedPokemons = selectedPokemons.indexOf(name);
-    if (indexInSelectedPokemons !== -1) {
-      setSelectedPokemons((selectedPokemons) => {
-        const result = [...selectedPokemons];
-        result.splice(indexInSelectedPokemons, 1);
-        return result;
-      });
-
-      return;
-    }
-    setSelectedPokemons((oldSelectedPokemons) => {
-      const result = [...oldSelectedPokemons];
-      if (result.length < 2) {
-        result.push(name);
-        return result;
-      } else {
-        result.shift();
-        result.push(name);
-        return result;
+    const newSelectedPokemons = [...selectedPokemons];
+    if (indexInSelectedPokemons > -1) {
+      newSelectedPokemons.splice(indexInSelectedPokemons, 1);
+    } else {
+      newSelectedPokemons.push(name);
+      if (newSelectedPokemons.length > 2) {
+        newSelectedPokemons.shift();
       }
-    });
+    }
+    onChange(newSelectedPokemons);
   }
   const pokemons = pages
     .flatMap((pokemon) => pokemon.results)
