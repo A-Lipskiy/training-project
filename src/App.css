@@ -44,3 +44,90 @@
 .selected {
   background-color: #291e33;
 }
+.button-start-game {
+  background-color: #291e33;
+  width: 30%;
+  height: 5%;
+  color: #a8e6ce;
+  margin-top: 2%;
+  border: 1px solid #f8b195;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 100%;
+  opacity: 0;
+  visibility: hidden;
+  -moz-transition: opacity 250ms linear, visibility 0s linear 250ms;
+  -o-transition: opacity 250ms linear, visibility 0s linear 250ms;
+  -webkit-transition: opacity 500ms linear, visibility 0s linear;
+  -webkit-transition-delay: 0s, 250ms;
+  transition: opacity 250ms linear, visibility 0s linear 250ms;
+}
+.button-visible {
+  opacity: 1;
+  visibility: visible;
+  cursor: pointer;
+  -moz-transition: opacity 250ms linear, visibility 0s linear;
+  -o-transition: opacity 250ms linear, visibility 0s linear;
+  -webkit-transition: opacity 250ms linear, visibility 0s linear;
+  transition: opacity 250ms linear, visibility 0s linear;
+}
+.main-page-wrapper {
+  text-align: center;
+  height: 100vh;
+}
+
+.close-button {
+  background: none;
+  border: 0;
+  box-sizing: border-box;
+  color: transparent;
+  cursor: pointer;
+  font-family: Helvetica, Sans-Serif;
+  font-size: 18px;
+  left: 50%;
+  letter-spacing: 1.5px;
+  line-height: 90px;
+  outline: none;
+  overflow: hidden;
+  padding: 10px 0 0;
+  position: absolute;
+  text-transform: uppercase;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.2s ease-in;
+  width: 100px;
+}
+
+.close-button::before,
+.close-button::after {
+  background-color: white;
+  content: '';
+  display: block;
+  height: 1px;
+  left: 0;
+  position: absolute;
+  transform-origin: center left;
+  transition: all 0.2s ease-in;
+  width: 141.4214px;
+  z-index: -1;
+}
+
+.close-button::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.close-button::after {
+  bottom: 0;
+  transform: rotate(-45deg);
+}
+
+.close-button:hover {
+  color: #8a2387;
+}
+
+.close-button:hover::before,
+.close-button:hover::after {
+  height: 50px;
+  transform: rotate(0deg);
+}
