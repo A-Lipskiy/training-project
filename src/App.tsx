@@ -1,11 +1,14 @@
-import { PokemonsList } from './PokemonsList';
 import { Game } from './Game';
 import './App.css';
 import { useState } from 'react';
-import { Route, BrowserRouter, Link, Switch } from 'react-router-dom';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { MainPage } from './MainPage';
 
 export function App(): JSX.Element {
-  const [selectedPokemons, setSelectedPokemons] = useState<string[]>([]);
+  const [selectedPokemons, setSelectedPokemons] = useState<[string, string]>([
+    '',
+    '',
+  ]);
 
   return (
     <div className="App">
@@ -15,32 +18,15 @@ export function App(): JSX.Element {
             exact
             path="/"
             render={() => (
-              <div className="page-wrapper">
-                <h1 className="header-text">Choose two pokemons</h1>
-                <PokemonsList
-                  selectedPokemons={selectedPokemons}
-                  onChange={setSelectedPokemons}
-                />
-                <Link to="/game">
-                  <button
-                    className={`button-start-game ${
-                      selectedPokemons.length === 2 ? 'button-visible' : ''
-                    }`}
-                  >
-                    Start Game
-                  </button>
-                </Link>
-              </div>
+              <MainPage
+                selectedPokemons={selectedPokemons}
+                setSelectedPokemons={setSelectedPokemons}
+              />
             )}
           />
           <Route
             path="/game"
-            render={() => (
-              <div className="page-wrapper">
-                {' '}
-                <Game names={selectedPokemons}></Game>
-              </div>
-            )}
+            render={() => <Game pokemonNames={selectedPokemons}></Game>}
           />
         </Switch>
       </BrowserRouter>

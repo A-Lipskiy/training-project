@@ -104,6 +104,7 @@
   height: 800px;
   width: 800px;
   margin: auto;
+  position: relative;
 }
 .dotted-line {
   height: 800px;
@@ -114,15 +115,23 @@
 .ball {
   width: 5%;
   height: 5%;
-  position: relative;
+  position: absolute;
   background-color: #f8b195;
   border-radius: 50%;
 }
-.player-card {
+.player1-card {
   height: 30%;
   width: 10%;
   background-color: #291e33;
   position: absolute;
+  left: 0px;
+}
+.player2-card {
+  height: 30%;
+  width: 10%;
+  background-color: #291e33;
+  position: absolute;
+  left: 900px;
 }
 .player-card-image {
   width: 90%;
