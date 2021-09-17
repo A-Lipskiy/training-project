@@ -47,4 +47,3 @@ export function App(): JSX.Element {
     </div>
   );
 }
-//

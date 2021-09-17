@@ -1,20 +1,12 @@
 import { useFetchPokemon } from './useFetchPokemon';
 import { BallSpinner } from 'react-spinners-kit';
 type Props = {
-  y: string;
-  x: string;
+  y: number;
+  x: number;
   name: string;
-  keyCodeUp: number;
-  keyCodeDowm: number;
 };
 
-export function PlayerCard({
-  y,
-  x,
-  name,
-  keyCodeUp,
-  keyCodeDowm,
-}: Props): JSX.Element {
+export function PlayerCard({ y, x, name }: Props): JSX.Element {
   const { isLoading, pokemon } = useFetchPokemon(name);
   if (isLoading || !pokemon)
     return (

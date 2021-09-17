@@ -1,6 +1,6 @@
 type Props = {
-  x: string;
-  y: string;
+  x: number;
+  y: number;
 };
 
 export function Ball({ x, y }: Props): JSX.Element {

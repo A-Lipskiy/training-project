@@ -93,11 +93,17 @@
   background-color: #6c5b7b;
   color: #f8b195;
 }
+.game-wrapper {
+  height: 800px;
+  width: 1000px;
+  margin: 3% auto;
+  position: relative;
+}
 .field {
   background-color: #6c5b7b;
   height: 800px;
   width: 800px;
-  margin: 3% auto;
+  margin: auto;
 }
 .dotted-line {
   height: 800px;
@@ -113,18 +119,12 @@
   border-radius: 50%;
 }
 .player-card {
-  height: 200px;
-  width: 110px;
+  height: 30%;
+  width: 10%;
   background-color: #291e33;
-  position: relative;
+  position: absolute;
 }
 .player-card-image {
-  width: 100px;
-  height: 200px;
-}
-.error-message {
-  margin-top: 20%;
-  font: 100px Helvetica, Sans-Serif;
-  letter-spacing: -5px;
-  color: #ec4444;
+  width: 90%;
+  height: 100%;
 }
