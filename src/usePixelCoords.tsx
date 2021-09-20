@@ -4,12 +4,16 @@ type Props = {
   y: number;
   x?: number;
 };
+type Coords = {
+  x: string;
+  y: string;
+};
 export const usePixelCoords = ({
   elemName,
   fieldSize,
   y,
   x = 0,
-}: Props): { x: string; y: string } => {
+}: Props): Coords => {
   if (elemName === 'player')
     return { y: ((y * (fieldSize * 0.7)) / 100).toString() + 'px', x: '' };
   else if (elemName === 'ball')

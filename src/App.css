@@ -119,14 +119,14 @@
   background-color: #f8b195;
   border-radius: 50%;
 }
-.player1-card {
+.right-card {
   height: 30%;
   width: 10%;
   background-color: #291e33;
   position: absolute;
   left: 0px;
 }
-.player2-card {
+.left-card {
   height: 30%;
   width: 10%;
   background-color: #291e33;

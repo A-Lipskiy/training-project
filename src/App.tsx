@@ -15,7 +15,10 @@ export function App(): JSX.Element {
       <BrowserRouter>
         <Switch>
           <Route
-            exact
+            path="/game"
+            render={() => <Game pokemons={selectedPokemons}></Game>}
+          />
+          <Route
             path="/"
             render={() => (
               <MainPage
@@ -23,10 +26,6 @@ export function App(): JSX.Element {
                 onChangePokemons={setSelectedPokemons}
               />
             )}
-          />
-          <Route
-            path="/game"
-            render={() => <Game pokemons={selectedPokemons}></Game>}
           />
         </Switch>
       </BrowserRouter>

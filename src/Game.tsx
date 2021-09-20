@@ -55,13 +55,13 @@ export function Game({ pokemons }: Props): JSX.Element {
         <PlayerCard
           y={player1Coord}
           pokemonName={pokemons[0]}
-          className="player1-card"
+          playerCardType="right"
           fieldSize={fieldSize}
         ></PlayerCard>
         <PlayerCard
           y={player2Coord}
           pokemonName={pokemons[1]}
-          className="player2-card"
+          playerCardType="left"
           fieldSize={fieldSize}
         ></PlayerCard>
       </div>
