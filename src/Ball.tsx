@@ -1,4 +1,4 @@
-import { usePixelCoords } from './usePixelCoords';
+import { calculatePixelCoords } from './calculatePixelCoords';
 type Props = {
   x: number;
   y: number;
@@ -6,7 +6,7 @@ type Props = {
 };
 
 export function Ball({ x, y, fieldSize }: Props): JSX.Element {
-  const ballPixelCoords = usePixelCoords({
+  const ballPixelCoords = calculatePixelCoords({
     elemName: 'ball',
     fieldSize,
     y,

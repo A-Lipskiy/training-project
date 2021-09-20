@@ -14,15 +14,15 @@ export function Game({ pokemons }: Props): JSX.Element {
   const [fieldDivElem, setFieldDivElem] = useState<HTMLDivElement | null>(null);
   const [fieldSize, setFieldSize] = useState(0);
   const [ballCoords, setBallCoods] = useState<Coords>({ x: 50, y: 50 });
-  const [player1Coord, setPlayer1Coord] = useState(50);
-  const [player2Coord, setPlayer2Coord] = useState(50);
+  const [player1Coord, setPlayer1Coord] = useState(0);
+  const [player2Coord, setPlayer2Coord] = useState(100);
 
   function changePlayerCoords(e: KeyboardEvent): void {
     console.log(e.key);
-    //Change state here
+    // Change state here
     setBallCoods({ x: 100, y: 100 });
-    setPlayer1Coord(10);
-    setPlayer2Coord(20);
+    setPlayer1Coord(50);
+    setPlayer2Coord(50);
   }
   useEffect(() => {
     if (fieldDivElem) {
@@ -48,22 +48,26 @@ export function Game({ pokemons }: Props): JSX.Element {
       {pokemons.includes('') && <Redirect to="/" />}
 
       <div className="game-wrapper">
-        <div ref={setFieldDivElem} className="field">
+        <div ref={setFieldDivElem} className="ui-field">
           <div className="dotted-line"></div>
-          <Ball x={ballCoords.x} y={ballCoords.y} fieldSize={fieldSize} />
+          <div className="game-field">
+            <Ball x={ballCoords.x} y={ballCoords.y} fieldSize={fieldSize} />
+          </div>
+          <div className="cards-wrapper">
+            <PlayerCard
+              y={player1Coord}
+              pokemonName={pokemons[0]}
+              playerCardType="left"
+              fieldSize={fieldSize}
+            ></PlayerCard>
+            <PlayerCard
+              y={player2Coord}
+              pokemonName={pokemons[1]}
+              playerCardType="right"
+              fieldSize={fieldSize}
+            ></PlayerCard>
+          </div>
         </div>
-        <PlayerCard
-          y={player1Coord}
-          pokemonName={pokemons[0]}
-          playerCardType="right"
-          fieldSize={fieldSize}
-        ></PlayerCard>
-        <PlayerCard
-          y={player2Coord}
-          pokemonName={pokemons[1]}
-          playerCardType="left"
-          fieldSize={fieldSize}
-        ></PlayerCard>
       </div>
     </div>
   );

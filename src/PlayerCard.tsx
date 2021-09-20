@@ -1,6 +1,7 @@
 import { useFetchPokemon } from './useFetchPokemon';
 import { BallSpinner } from 'react-spinners-kit';
-import { usePixelCoords } from './usePixelCoords';
+import { calculatePixelCoords } from './calculatePixelCoords';
+
 type Props = {
   y: number;
   pokemonName: string;
@@ -15,7 +16,11 @@ export function PlayerCard({
   fieldSize,
 }: Props): JSX.Element {
   const { isLoading, pokemon } = useFetchPokemon(pokemonName);
-  const pixelCoordY = usePixelCoords({ elemName: 'player', fieldSize, y });
+  const pixelCoordY = calculatePixelCoords({
+    elemName: 'player',
+    fieldSize,
+    y,
+  });
   if (isLoading || !pokemon)
     return (
       <div
