@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 
 type Props = {
   selectedPokemons: [string, string];
-  setSelectedPokemons: (pokemons: [string, string]) => void;
+  onChangePokemons: (pokemons: [string, string]) => void;
 };
 export function MainPage({
   selectedPokemons,
-  setSelectedPokemons,
+  onChangePokemons,
 }: Props): JSX.Element {
   return (
     <div className="page-wrapper">
       <h1 className="header-text">Choose two pokemons</h1>
       <PokemonsList
         selectedPokemons={selectedPokemons}
-        onChange={setSelectedPokemons}
+        onChange={onChangePokemons}
       />
       <Link to="/game">
         <button
