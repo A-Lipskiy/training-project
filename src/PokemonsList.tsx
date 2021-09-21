@@ -10,8 +10,8 @@ const initialPageCount =
   Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
 
 type Props = {
-  selectedPokemons: string[];
-  onChange: (pokemons: string[]) => void;
+  selectedPokemons: [string, string];
+  onChange: (pokemons: [string, string]) => void;
 };
 
 export function PokemonsList({
@@ -39,7 +39,7 @@ export function PokemonsList({
 
   function handleClick(name: string): void {
     const indexInSelectedPokemons = selectedPokemons.indexOf(name);
-    const newSelectedPokemons = [...selectedPokemons];
+    const newSelectedPokemons: [string, string] = [...selectedPokemons];
     if (indexInSelectedPokemons > -1) {
       newSelectedPokemons.splice(indexInSelectedPokemons, 1);
     } else {

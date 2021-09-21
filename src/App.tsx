@@ -1,17 +1,34 @@
-import { PokemonsList } from './PokemonsList';
+import { Game } from './Game';
 import './App.css';
 import { useState } from 'react';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { MainPage } from './MainPage';
 
 export function App(): JSX.Element {
-  const [selectedPokemons, setSelectedPokemons] = useState<string[]>([]);
+  const [selectedPokemons, setSelectedPokemons] = useState<[string, string]>([
+    '',
+    '',
+  ]);
 
   return (
     <div className="App">
-      <h1 className="header-text">Choose two pokemons</h1>
-      <PokemonsList
-        selectedPokemons={selectedPokemons}
-        onChange={setSelectedPokemons}
-      />
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path="/game"
+            render={() => <Game pokemons={selectedPokemons} />}
+          />
+          <Route
+            path="/"
+            render={() => (
+              <MainPage
+                selectedPokemons={selectedPokemons}
+                onChangePokemons={setSelectedPokemons}
+              />
+            )}
+          />
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 }
