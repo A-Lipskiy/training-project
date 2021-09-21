@@ -8,8 +8,8 @@ export function Ball({ x, y }: Props): JSX.Element {
     <div
       className="ball"
       style={{
-        top: `${y.toString()}%`,
-        left: `${x.toString()}%`,
+        top: `${y}%`,
+        left: `${x}%`,
       }}
     ></div>
   );

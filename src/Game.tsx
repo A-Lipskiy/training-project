@@ -30,14 +30,13 @@ export function Game({ pokemons }: Props): JSX.Element {
     };
   }, []);
 
+  if (pokemons.includes('')) return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
       <Link to="/">
         <button className="button-close-game">Close game</button>
       </Link>
       <h1 className="header-text">Pokemons ping-pong</h1>
-
-      {pokemons.includes('') && <Redirect to="/" />}
       <div className="ui-field">
         <div className="dotted-line"></div>
         <div className="game-field">
@@ -48,12 +47,12 @@ export function Game({ pokemons }: Props): JSX.Element {
             y={player1Coord}
             pokemonName={pokemons[0]}
             playerCardType="left"
-          ></PlayerCard>
+          />
           <PlayerCard
             y={player2Coord}
             pokemonName={pokemons[1]}
             playerCardType="right"
-          ></PlayerCard>
+          />
         </div>
       </div>
     </div>

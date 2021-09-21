@@ -15,18 +15,12 @@ export function PlayerCard({
   const { isLoading, pokemon } = useFetchPokemon(pokemonName);
   if (isLoading || !pokemon)
     return (
-      <div
-        className={`${playerCardType}-card`}
-        style={{ top: `${y.toString()}%` }}
-      >
+      <div className={`${playerCardType}-card`} style={{ top: `${y}%` }}>
         <BallSpinner size={70} color="#6c5b7b" />
       </div>
     );
   return (
-    <div
-      className={`${playerCardType}-card`}
-      style={{ top: `${y.toString()}%` }}
-    >
+    <div className={`${playerCardType}-card`} style={{ top: `${y}%` }}>
       <img
         className="player-card-image"
         src={pokemon.sprites.other.dream_world.front_default}

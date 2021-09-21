@@ -16,7 +16,7 @@ export function App(): JSX.Element {
         <Switch>
           <Route
             path="/game"
-            render={() => <Game pokemons={selectedPokemons}></Game>}
+            render={() => <Game pokemons={selectedPokemons} />}
           />
           <Route
             path="/"
