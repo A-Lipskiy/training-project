@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   height: 100vh;
+  width: 100vw;
   background-color: #f8b195;
 }
 .block-span {
@@ -31,13 +32,12 @@
 .header-text {
   display: inline;
   position: relative;
-  font: 100px Helvetica, Sans-Serif;
-  letter-spacing: -5px;
+  font: 5vw Helvetica, Sans-Serif;
   color: #6c5b7b;
 }
 .pokemon-list-wrapper {
   height: 80vh;
-  width: 100%;
+  width: 100vw;
   overflow: auto;
 }
 
@@ -74,6 +74,7 @@
 .page-wrapper {
   text-align: center;
   height: 100vh;
+  width: 100vw;
 }
 .button-close-game {
   background-color: #f8b195;
@@ -96,17 +97,18 @@
 
 .ui-field {
   background-color: #6c5b7b;
-  height: 80vh;
-  width: 80vh;
+  height: 80vmin;
+  width: 80vmin;
   margin: auto;
   position: relative;
+  margin-top: 2%;
 }
 .game-field {
-  height: 95%;
-  width: 95%;
+  height: 76vmin;
+  width: 76vmin;
   position: relative;
-  left: 2.5%;
-  top: 2.5%;
+  left: 2vmin;
+  top: 2vmin;
 }
 .dotted-line {
   height: 100%;
@@ -115,15 +117,15 @@
   position: absolute;
 }
 .ball {
-  width: 5%;
-  height: 5%;
+  width: 4vmin;
+  height: 4vmin;
   position: absolute;
   background-color: #291e33;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
 .left-card {
-  height: 20vh;
+  height: 20vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
@@ -131,7 +133,7 @@
   transform: translate(0, -50%);
 }
 .right-card {
-  height: 20vh;
+  height: 20vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
@@ -143,8 +145,8 @@
   height: 100%;
 }
 .cards-wrapper {
-  height: 60vh;
-  width: 80vh;
+  height: 60vmin;
+  width: 80vmin;
   position: absolute;
-  top: 10vh;
+  top: 10vmin;
 }

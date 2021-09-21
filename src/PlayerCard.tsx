@@ -1,31 +1,23 @@
 import { useFetchPokemon } from './useFetchPokemon';
 import { BallSpinner } from 'react-spinners-kit';
-import { calculatePixelCoords } from './calculatePixelCoords';
 
 type Props = {
   y: number;
   pokemonName: string;
   playerCardType: 'left' | 'right';
-  fieldSize: number;
 };
 
 export function PlayerCard({
   y,
   pokemonName,
   playerCardType,
-  fieldSize,
 }: Props): JSX.Element {
   const { isLoading, pokemon } = useFetchPokemon(pokemonName);
-  const pixelCoordY = calculatePixelCoords({
-    elemName: 'player',
-    fieldSize,
-    y,
-  });
   if (isLoading || !pokemon)
     return (
       <div
         className={`${playerCardType}-card`}
-        style={{ top: `${pixelCoordY.y}` }}
+        style={{ top: `${y.toString()}%` }}
       >
         <BallSpinner size={70} color="#6c5b7b" />
       </div>
@@ -33,7 +25,7 @@ export function PlayerCard({
   return (
     <div
       className={`${playerCardType}-card`}
-      style={{ top: `${pixelCoordY.y}` }}
+      style={{ top: `${y.toString()}%` }}
     >
       <img
         className="player-card-image"

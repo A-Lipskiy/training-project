@@ -1,23 +1,15 @@
-import { calculatePixelCoords } from './calculatePixelCoords';
 type Props = {
   x: number;
   y: number;
-  fieldSize: number;
 };
 
-export function Ball({ x, y, fieldSize }: Props): JSX.Element {
-  const ballPixelCoords = calculatePixelCoords({
-    elemName: 'ball',
-    fieldSize,
-    y,
-    x,
-  });
+export function Ball({ x, y }: Props): JSX.Element {
   return (
     <div
       className="ball"
       style={{
-        top: `${ballPixelCoords.y}`,
-        left: `${ballPixelCoords.x}`,
+        top: `${y.toString()}%`,
+        left: `${x.toString()}%`,
       }}
     ></div>
   );
