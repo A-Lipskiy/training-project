@@ -1,5 +1,5 @@
 import { Link, Redirect } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Ball } from './Ball';
 import { PlayerCard } from './PlayerCard';
 
@@ -12,23 +12,37 @@ type Coords = {
 };
 export function Game({ pokemons }: Props): JSX.Element {
   const [ballCoords, setBallCoods] = useState<Coords>({ x: 50, y: 50 });
-  const [player1Coord, setPlayer1Coord] = useState(0);
-  const [player2Coord, setPlayer2Coord] = useState(100);
+  const [player1Coord, setPlayer1Coord] = useState(50);
+  const [player2Coord, setPlayer2Coord] = useState(50);
 
-  function changePlayerCoords(e: KeyboardEvent): void {
-    console.log(e.key);
-    // Change state here
+  const changePlayerCoords = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'w' || e.key === 'W') {
+      setPlayer1Coord((player1Coord) =>
+        player1Coord > 0 ? player1Coord - 1 : player1Coord
+      );
+    } else if (e.key === 's' || e.key === 'S') {
+      setPlayer1Coord((player1Coord) =>
+        player1Coord < 100 ? player1Coord + 1 : player1Coord
+      );
+    } else if (e.key === 'ArrowUp') {
+      setPlayer2Coord((player2Coord) =>
+        player2Coord > 0 ? player2Coord - 1 : player2Coord
+      );
+    } else if (e.key === 'ArrowDown') {
+      setPlayer2Coord((player2Coord) =>
+        player2Coord < 100 ? player2Coord + 1 : player2Coord
+      );
+    }
     setBallCoods({ x: 100, y: 100 });
-    setPlayer1Coord(50);
-    setPlayer2Coord(50);
-  }
+  }, []);
+
   useEffect(() => {
     document.addEventListener('keydown', changePlayerCoords);
 
     return () => {
       document.removeEventListener('keydown', changePlayerCoords);
     };
-  }, []);
+  }, [changePlayerCoords]);
 
   if (pokemons.includes('')) return <Redirect to="/" />;
   return (
