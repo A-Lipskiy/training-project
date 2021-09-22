@@ -1,5 +1,5 @@
 import { Link, Redirect } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Ball } from './Ball';
 import { PlayerCard } from './PlayerCard';
 
@@ -18,11 +18,20 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const interval = 40;
   const step = 5;
 
-  const generateHandlePlayCoordsCallbacks = useCallback(() => {
+  function calculateCoordMinusStep(oldCoord: number): number {
+    if (oldCoord > 0) return oldCoord - step;
+    return oldCoord;
+  }
+
+  function calculateCoordPlusStep(oldCoord: number): number {
+    if (oldCoord < 100) return oldCoord + step;
+    return oldCoord;
+  }
+  useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
     let secondPlayerInt: TimeoutResult = null;
 
-    const cleanHandle = () => {
+    const handleKeyUp = () => {
       if (firstPlayerInt) clearInterval(firstPlayerInt);
       firstPlayerInt = null;
       if (secondPlayerInt) clearInterval(secondPlayerInt);
@@ -37,7 +46,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerInt ||
             setInterval(() => {
               setPlayer1Coord((player1Coord) =>
-                player1Coord > 0 ? player1Coord - step : player1Coord
+                calculateCoordMinusStep(player1Coord)
               );
             }, interval);
 
@@ -48,7 +57,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerInt ||
             setInterval(() => {
               setPlayer1Coord((player1Coord) =>
-                player1Coord < 100 ? player1Coord + step : player1Coord
+                calculateCoordPlusStep(player1Coord)
               );
             }, interval);
           break;
@@ -57,7 +66,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             secondPlayerInt ||
             setInterval(() => {
               setPlayer2Coord((player2Coord) =>
-                player2Coord > 0 ? player2Coord - step : player2Coord
+                calculateCoordMinusStep(player2Coord)
               );
             }, interval);
           break;
@@ -66,7 +75,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             secondPlayerInt ||
             setInterval(() => {
               setPlayer2Coord((player2Coord) =>
-                player2Coord < 100 ? player2Coord + step : player2Coord
+                calculateCoordPlusStep(player2Coord)
               );
             }, interval);
           break;
@@ -74,22 +83,15 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           break;
       }
     };
-
-    return { handleKeyDown, cleanHandle };
-  }, []);
-
-  useEffect(() => {
     if (isGameStarted) {
-      const { cleanHandle, handleKeyDown } =
-        generateHandlePlayCoordsCallbacks();
       document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keyup', cleanHandle);
+      document.addEventListener('keyup', handleKeyUp);
       return () => {
         document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', cleanHandle);
+        document.removeEventListener('keyup', handleKeyUp);
       };
     }
-  }, [generateHandlePlayCoordsCallbacks, isGameStarted]);
+  }, [isGameStarted]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
