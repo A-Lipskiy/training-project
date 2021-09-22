@@ -10,11 +10,31 @@ type Props = {
   pokemonTwo: string;
 };
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoordY] = useState(50);
-  const [ballCoordX] = useState(50);
+  const [ballCoordY, setBallCoordY] = useState(50);
+  const [ballCoordX, setBallCoordX] = useState(50);
+  const [ballVelY, setBallVelY] = useState(1);
+  const [ballVelX, setBallVelX] = useState(2);
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
+
+  const generateBallCoordsCallback = useCallback(() => {
+    let BallInt: TimeoutResult = null;
+    const cleanHandle = () => {
+      if (BallInt) clearInterval(BallInt);
+      BallInt = null;
+    };
+
+    const handleGameStarted = () => {
+      BallInt =
+        BallInt ||
+        setInterval(() => {
+          setBallCoordY((y) => y + ballVelY);
+          setBallCoordX((x) => x + ballVelX);
+        }, 30);
+    };
+    return { handleGameStarted, cleanHandle };
+  }, [ballVelX, ballVelY]);
 
   const generateHandlePlayCoordsCallbacks = useCallback(() => {
     let firstPlayerInt: TimeoutResult = null;
@@ -78,6 +98,16 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
 
   useEffect(() => {
     if (isGameStarted) {
+      const { handleGameStarted, cleanHandle } = generateBallCoordsCallback();
+      handleGameStarted();
+      return () => {
+        cleanHandle();
+      };
+    }
+  }, [generateBallCoordsCallback, isGameStarted]);
+
+  useEffect(() => {
+    if (isGameStarted) {
       const { cleanHandle, handleKeyDown } =
         generateHandlePlayCoordsCallbacks();
       document.addEventListener('keydown', handleKeyDown);
@@ -88,6 +118,24 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       };
     }
   }, [generateHandlePlayCoordsCallbacks, isGameStarted]);
+
+  useEffect(() => {
+    if (ballCoordX >= 100) {
+      setBallVelX((prevVel) => -prevVel);
+    }
+    if (ballCoordX <= 0) {
+      setBallVelX((prevVel) => -prevVel);
+    }
+  }, [ballCoordX]);
+
+  useEffect(() => {
+    if (ballCoordY >= 100) {
+      setBallVelY((prevVel) => -prevVel);
+    }
+    if (ballCoordY <= 0) {
+      setBallVelY((prevVel) => -prevVel);
+    }
+  }, [ballCoordY]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
