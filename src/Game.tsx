@@ -15,6 +15,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const interval = 40;
+  const step = 5;
 
   const generateHandlePlayCoordsCallbacks = useCallback(() => {
     let firstPlayerInt: TimeoutResult = null;
@@ -35,9 +37,9 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerInt ||
             setInterval(() => {
               setPlayer1Coord((player1Coord) =>
-                player1Coord > 0 ? player1Coord - 5 : player1Coord
+                player1Coord > 0 ? player1Coord - step : player1Coord
               );
-            }, 40);
+            }, interval);
 
           break;
         case 's':
@@ -46,27 +48,27 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerInt ||
             setInterval(() => {
               setPlayer1Coord((player1Coord) =>
-                player1Coord < 100 ? player1Coord + 5 : player1Coord
+                player1Coord < 100 ? player1Coord + step : player1Coord
               );
-            }, 40);
+            }, interval);
           break;
         case 'ArrowUp':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
               setPlayer2Coord((player2Coord) =>
-                player2Coord > 0 ? player2Coord - 5 : player2Coord
+                player2Coord > 0 ? player2Coord - step : player2Coord
               );
-            }, 40);
+            }, interval);
           break;
         case 'ArrowDown':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
               setPlayer2Coord((player2Coord) =>
-                player2Coord < 100 ? player2Coord + 5 : player2Coord
+                player2Coord < 100 ? player2Coord + step : player2Coord
               );
-            }, 40);
+            }, interval);
           break;
         default:
           break;
