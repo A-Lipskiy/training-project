@@ -3,48 +3,93 @@ import { useState, useEffect, useCallback } from 'react';
 import { Ball } from './Ball';
 import { PlayerCard } from './PlayerCard';
 
+type TimeoutResult = ReturnType<typeof setTimeout> | null;
+
 type Props = {
-  pokemons: [string, string];
+  pokemonOne: string;
+  pokemonTwo: string;
 };
-type Coords = {
-  x: number;
-  y: number;
-};
-export function Game({ pokemons }: Props): JSX.Element {
-  const [ballCoords, setBallCoods] = useState<Coords>({ x: 50, y: 50 });
+export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
+  const [ballCoordY] = useState(50);
+  const [ballCoordX] = useState(50);
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
-  const changePlayerCoords = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'w' || e.key === 'W') {
-      setPlayer1Coord((player1Coord) =>
-        player1Coord > 0 ? player1Coord - 1 : player1Coord
-      );
-    } else if (e.key === 's' || e.key === 'S') {
-      setPlayer1Coord((player1Coord) =>
-        player1Coord < 100 ? player1Coord + 1 : player1Coord
-      );
-    } else if (e.key === 'ArrowUp') {
-      setPlayer2Coord((player2Coord) =>
-        player2Coord > 0 ? player2Coord - 1 : player2Coord
-      );
-    } else if (e.key === 'ArrowDown') {
-      setPlayer2Coord((player2Coord) =>
-        player2Coord < 100 ? player2Coord + 1 : player2Coord
-      );
-    }
-    setBallCoods({ x: 100, y: 100 });
+  const generateHandlePlayCoordsCallbacks = useCallback(() => {
+    let firstPlayerInt: TimeoutResult = null;
+    let secondPlayerInt: TimeoutResult = null;
+
+    const cleanHandle = () => {
+      if (firstPlayerInt) clearInterval(firstPlayerInt);
+      firstPlayerInt = null;
+      if (secondPlayerInt) clearInterval(secondPlayerInt);
+      secondPlayerInt = null;
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'w':
+        case 'W':
+          firstPlayerInt =
+            firstPlayerInt ||
+            setInterval(() => {
+              setPlayer1Coord((player1Coord) =>
+                player1Coord > 0 ? player1Coord - 5 : player1Coord
+              );
+            }, 40);
+
+          break;
+        case 's':
+        case 'S':
+          firstPlayerInt =
+            firstPlayerInt ||
+            setInterval(() => {
+              setPlayer1Coord((player1Coord) =>
+                player1Coord < 100 ? player1Coord + 5 : player1Coord
+              );
+            }, 40);
+          break;
+        case 'ArrowUp':
+          secondPlayerInt =
+            secondPlayerInt ||
+            setInterval(() => {
+              setPlayer2Coord((player2Coord) =>
+                player2Coord > 0 ? player2Coord - 5 : player2Coord
+              );
+            }, 40);
+          break;
+        case 'ArrowDown':
+          secondPlayerInt =
+            secondPlayerInt ||
+            setInterval(() => {
+              setPlayer2Coord((player2Coord) =>
+                player2Coord < 100 ? player2Coord + 5 : player2Coord
+              );
+            }, 40);
+          break;
+        default:
+          break;
+      }
+    };
+
+    return { handleKeyDown, cleanHandle };
   }, []);
 
   useEffect(() => {
-    document.addEventListener('keydown', changePlayerCoords);
+    if (isGameStarted) {
+      const { cleanHandle, handleKeyDown } =
+        generateHandlePlayCoordsCallbacks();
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', cleanHandle);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', cleanHandle);
+      };
+    }
+  }, [generateHandlePlayCoordsCallbacks, isGameStarted]);
 
-    return () => {
-      document.removeEventListener('keydown', changePlayerCoords);
-    };
-  }, [changePlayerCoords]);
-
-  if (pokemons.includes('')) return <Redirect to="/" />;
+  if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
       <Link to="/">
@@ -54,21 +99,29 @@ export function Game({ pokemons }: Props): JSX.Element {
       <div className="ui-field">
         <div className="dotted-line"></div>
         <div className="game-field">
-          <Ball x={ballCoords.x} y={ballCoords.y} />
+          <Ball x={ballCoordX} y={ballCoordY} />
         </div>
         <div className="cards-wrapper">
           <PlayerCard
             y={player1Coord}
-            pokemonName={pokemons[0]}
+            pokemonName={pokemonOne}
             playerCardType="left"
           />
           <PlayerCard
             y={player2Coord}
-            pokemonName={pokemons[1]}
+            pokemonName={pokemonTwo}
             playerCardType="right"
           />
         </div>
       </div>
+      <button
+        className={`button-start-game ${
+          !isGameStarted ? 'button-visible' : ''
+        }`}
+        onClick={() => setIsGameStarted(true)}
+      >
+        Start Game
+      </button>
     </div>
   );
 }

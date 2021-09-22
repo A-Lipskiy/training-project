@@ -16,7 +16,7 @@ export function MainPage({
         selectedPokemons={selectedPokemons}
         onChange={onChangePokemons}
       />
-      <Link to="/game">
+      <Link to={`/game/${selectedPokemons[0]}/${selectedPokemons[1]}`}>
         <button
           className={`button-start-game ${
             selectedPokemons.length === 2 && !selectedPokemons.includes('')
