@@ -9,33 +9,44 @@ type Props = {
   pokemonOne: string;
   pokemonTwo: string;
 };
+type BallCoords = [number, number];
+
+const PLAYER_COORD_INTERVAL = 40;
+const PLAYER_COORD_STEP = 5;
+
+function calculateCoordMinusStep(oldCoord: number): number {
+  if (oldCoord > 0) return oldCoord - PLAYER_COORD_STEP;
+  return oldCoord;
+}
+
+function calculateCoordPlusStep(oldCoord: number): number {
+  if (oldCoord < 100) return oldCoord + PLAYER_COORD_STEP;
+  return oldCoord;
+}
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoordY] = useState(50);
-  const [ballCoordX] = useState(50);
+  const [ballCoords] = useState<BallCoords>([50, 50]);
+  const [ballCoordY, ballCoordX] = ballCoords;
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const interval = 40;
-  const step = 5;
 
-  function calculateCoordMinusStep(oldCoord: number): number {
-    if (oldCoord > 0) return oldCoord - step;
-    return oldCoord;
-  }
-
-  function calculateCoordPlusStep(oldCoord: number): number {
-    if (oldCoord < 100) return oldCoord + step;
-    return oldCoord;
-  }
   useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
     let secondPlayerInt: TimeoutResult = null;
 
-    const handleKeyUp = () => {
-      if (firstPlayerInt) clearInterval(firstPlayerInt);
-      firstPlayerInt = null;
-      if (secondPlayerInt) clearInterval(secondPlayerInt);
-      secondPlayerInt = null;
+    const handleKeyUp = (e?: KeyboardEvent) => {
+      if (!e) {
+        if (firstPlayerInt) clearInterval(firstPlayerInt);
+        firstPlayerInt = null;
+        if (secondPlayerInt) clearInterval(secondPlayerInt);
+        secondPlayerInt = null;
+      } else if (['w', 'W', 's', 'S'].includes(e.key)) {
+        if (firstPlayerInt) clearInterval(firstPlayerInt);
+        firstPlayerInt = null;
+      } else if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+        if (secondPlayerInt) clearInterval(secondPlayerInt);
+        secondPlayerInt = null;
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -48,7 +59,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
               setPlayer1Coord((player1Coord) =>
                 calculateCoordMinusStep(player1Coord)
               );
-            }, interval);
+            }, PLAYER_COORD_INTERVAL);
 
           break;
         case 's':
@@ -59,7 +70,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
               setPlayer1Coord((player1Coord) =>
                 calculateCoordPlusStep(player1Coord)
               );
-            }, interval);
+            }, PLAYER_COORD_INTERVAL);
           break;
         case 'ArrowUp':
           secondPlayerInt =
@@ -68,7 +79,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
               setPlayer2Coord((player2Coord) =>
                 calculateCoordMinusStep(player2Coord)
               );
-            }, interval);
+            }, PLAYER_COORD_INTERVAL);
           break;
         case 'ArrowDown':
           secondPlayerInt =
@@ -77,7 +88,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
               setPlayer2Coord((player2Coord) =>
                 calculateCoordPlusStep(player2Coord)
               );
-            }, interval);
+            }, PLAYER_COORD_INTERVAL);
           break;
         default:
           break;
@@ -89,6 +100,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       return () => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
+        handleKeyUp();
       };
     }
   }, [isGameStarted]);
