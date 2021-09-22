@@ -35,15 +35,11 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     let secondPlayerInt: TimeoutResult = null;
 
     const handleKeyUp = (e?: KeyboardEvent) => {
-      if (!e) {
+      if (!e || (e && ['w', 'W', 's', 'S'].includes(e.key))) {
         if (firstPlayerInt) clearInterval(firstPlayerInt);
         firstPlayerInt = null;
-        if (secondPlayerInt) clearInterval(secondPlayerInt);
-        secondPlayerInt = null;
-      } else if (['w', 'W', 's', 'S'].includes(e.key)) {
-        if (firstPlayerInt) clearInterval(firstPlayerInt);
-        firstPlayerInt = null;
-      } else if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+      }
+      if (!e || (e && ['ArrowUp', 'ArrowDown'].includes(e.key))) {
         if (secondPlayerInt) clearInterval(secondPlayerInt);
         secondPlayerInt = null;
       }
@@ -56,9 +52,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           firstPlayerInt =
             firstPlayerInt ||
             setInterval(() => {
-              setPlayer1Coord((player1Coord) =>
-                calculateCoordMinusStep(player1Coord)
-              );
+              setPlayer1Coord(calculateCoordMinusStep);
             }, PLAYER_COORD_INTERVAL);
 
           break;
@@ -67,27 +61,21 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           firstPlayerInt =
             firstPlayerInt ||
             setInterval(() => {
-              setPlayer1Coord((player1Coord) =>
-                calculateCoordPlusStep(player1Coord)
-              );
+              setPlayer1Coord(calculateCoordPlusStep);
             }, PLAYER_COORD_INTERVAL);
           break;
         case 'ArrowUp':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
-              setPlayer2Coord((player2Coord) =>
-                calculateCoordMinusStep(player2Coord)
-              );
+              setPlayer2Coord(calculateCoordMinusStep);
             }, PLAYER_COORD_INTERVAL);
           break;
         case 'ArrowDown':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
-              setPlayer2Coord((player2Coord) =>
-                calculateCoordPlusStep(player2Coord)
-              );
+              setPlayer2Coord(calculateCoordPlusStep);
             }, PLAYER_COORD_INTERVAL);
           break;
         default:
