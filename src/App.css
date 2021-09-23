@@ -32,7 +32,7 @@
 .header-text {
   display: inline;
   position: relative;
-  font: 5vw Helvetica, Sans-Serif;
+  font: 4vmin Helvetica, Sans-Serif;
   color: #6c5b7b;
 }
 .pokemon-list-wrapper {

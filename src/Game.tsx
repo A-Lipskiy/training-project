@@ -9,22 +9,19 @@ type Props = {
   pokemonOne: string;
   pokemonTwo: string;
 };
-type BallCoords = [number, number];
 
 const PLAYER_COORD_INTERVAL = 40;
 const PLAYER_COORD_STEP = 5;
 
 function calculateCoordMinusStep(oldCoord: number): number {
-  if (oldCoord > 0) return oldCoord - PLAYER_COORD_STEP;
-  return oldCoord;
+  return oldCoord > 0 ? oldCoord - PLAYER_COORD_STEP : oldCoord;
 }
 
 function calculateCoordPlusStep(oldCoord: number): number {
-  if (oldCoord < 100) return oldCoord + PLAYER_COORD_STEP;
-  return oldCoord;
+  return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
 }
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoords] = useState<BallCoords>([50, 50]);
+  const [ballCoords] = useState([50, 50]);
   const [ballCoordY, ballCoordX] = ballCoords;
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
@@ -39,13 +36,14 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         if (firstPlayerInt) clearInterval(firstPlayerInt);
         firstPlayerInt = null;
       }
-      if (!e || ['ArrowUp', 'ArrowDown'].includes(e.key)) {
+      if (!e || ['o', 'O', 'l', 'L'].includes(e.key)) {
         if (secondPlayerInt) clearInterval(secondPlayerInt);
         secondPlayerInt = null;
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      console.log(e.key);
       switch (e.key) {
         case 'w':
         case 'W':
@@ -64,14 +62,16 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
               setPlayer1Coord(calculateCoordPlusStep);
             }, PLAYER_COORD_INTERVAL);
           break;
-        case 'ArrowUp':
+        case 'o':
+        case 'O':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
               setPlayer2Coord(calculateCoordMinusStep);
             }, PLAYER_COORD_INTERVAL);
           break;
-        case 'ArrowDown':
+        case 'l':
+        case 'L':
           secondPlayerInt =
             secondPlayerInt ||
             setInterval(() => {
