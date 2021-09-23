@@ -32,7 +32,7 @@
 .header-text {
   display: inline;
   position: relative;
-  font: 5vw Helvetica, Sans-Serif;
+  font: 4vmin Helvetica, Sans-Serif;
   color: #6c5b7b;
 }
 .pokemon-list-wrapper {
@@ -46,14 +46,14 @@
 }
 .button-start-game {
   background-color: #291e33;
-  width: 20%;
-  height: 5%;
+  width: 20vmin;
+  height: 5vmin;
   color: #a8e6ce;
   margin-top: 1%;
   border: 1px solid #f8b195;
   border-radius: 30px;
   font-weight: bold;
-  font-size: 100%;
+  font-size: 2vmin;
   opacity: 0;
   visibility: hidden;
   -moz-transition: opacity 250ms linear, visibility 0s linear 250ms;
@@ -101,7 +101,7 @@
   width: 80vmin;
   margin: auto;
   position: relative;
-  margin-top: 2%;
+  margin-top: 1%;
 }
 .game-field {
   height: 76vmin;
@@ -131,6 +131,8 @@
   position: absolute;
   left: -10%;
   transform: translate(0, -50%);
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .right-card {
   height: 20vmin;
@@ -139,6 +141,8 @@
   position: absolute;
   left: 100%;
   transform: translate(0, -50%);
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .player-card-image {
   width: 90%;

@@ -15,8 +15,9 @@ export function App(): JSX.Element {
       <BrowserRouter>
         <Switch>
           <Route
-            path="/game"
-            render={() => <Game pokemons={selectedPokemons} />}
+            exact
+            path="/game/:pokemonOne/:pokemonTwo"
+            render={({ match }) => <Game {...match.params} />}
           />
           <Route
             path="/"
