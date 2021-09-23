@@ -11,6 +11,7 @@ type Props = {
 };
 
 const PLAYER_COORD_INTERVAL = 40;
+const BALL_COORD_INTERVAL = 30;
 const PLAYER_COORD_STEP = 5;
 
 function calculateCoordMinusStep(oldCoord: number): number {
@@ -21,8 +22,10 @@ function calculateCoordPlusStep(oldCoord: number): number {
   return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
 }
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoords] = useState([50, 50]);
+  const [ballCoords, setBallCoords] = useState([50, 50]);
   const [ballCoordY, ballCoordX] = ballCoords;
+  const [ballStep, setBallStep] = useState([1, 2]);
+  const [ballStepY, ballStepX] = ballStep;
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -43,7 +46,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key);
       switch (e.key) {
         case 'w':
         case 'W':
@@ -92,6 +94,41 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       };
     }
   }, [isGameStarted]);
+
+  useEffect(() => {
+    let BallInt: TimeoutResult = null;
+
+    const handleEndBallMovement = () => {
+      if (BallInt) clearInterval(BallInt);
+      BallInt = null;
+    };
+
+    const handleStartBallMovement = () => {
+      BallInt =
+        BallInt ||
+        setInterval(
+          () => setBallCoords(([y, x]) => [y + ballStepY, x + ballStepX]),
+          BALL_COORD_INTERVAL
+        );
+    };
+    if (isGameStarted) handleStartBallMovement();
+    return () => {
+      handleEndBallMovement();
+    };
+  }, [ballStepX, ballStepY, isGameStarted]);
+
+  useEffect(() => {
+    if (
+      ballCoordX >= 100 ||
+      ballCoordX <= 0 ||
+      ballCoordY >= 100 ||
+      ballCoordY <= 0
+    )
+      setBallStep(([prevY, prevX]) => [
+        ballCoordY >= 100 || ballCoordY <= 0 ? -prevY : prevY,
+        ballCoordX >= 100 || ballCoordX <= 0 ? -prevX : prevX,
+      ]);
+  }, [ballCoordX, ballCoordY]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
