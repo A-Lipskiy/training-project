@@ -22,10 +22,7 @@ function calculateCoordPlusStep(oldCoord: number): number {
   return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
 }
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoords, setBallCoords] = useState([50, 50]);
-  const [ballCoordY, ballCoordX] = ballCoords;
-  const [ballStep, setBallStep] = useState([1, 2]);
-  const [ballStepY, ballStepX] = ballStep;
+  const [ballState, setBallState] = useState([50, 50, 1, 2]);
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -96,39 +93,26 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   }, [isGameStarted]);
 
   useEffect(() => {
+    if (!isGameStarted) return;
+
     let BallInt: TimeoutResult = null;
 
-    const handleEndBallMovement = () => {
+    BallInt =
+      BallInt ||
+      setInterval(() => {
+        setBallState(([yCoord, xCoord, yStep, xStep]) => [
+          yCoord + yStep,
+          xCoord + xStep,
+          yCoord + yStep >= 100 || yCoord + yStep <= 0 ? -yStep : yStep,
+          xCoord + xStep >= 100 || xCoord + xStep <= 0 ? -xStep : xStep,
+        ]);
+      }, BALL_COORD_INTERVAL);
+
+    return () => {
       if (BallInt) clearInterval(BallInt);
       BallInt = null;
     };
-
-    const handleStartBallMovement = () => {
-      BallInt =
-        BallInt ||
-        setInterval(
-          () => setBallCoords(([y, x]) => [y + ballStepY, x + ballStepX]),
-          BALL_COORD_INTERVAL
-        );
-    };
-    if (isGameStarted) handleStartBallMovement();
-    return () => {
-      handleEndBallMovement();
-    };
-  }, [ballStepX, ballStepY, isGameStarted]);
-
-  useEffect(() => {
-    if (
-      ballCoordX >= 100 ||
-      ballCoordX <= 0 ||
-      ballCoordY >= 100 ||
-      ballCoordY <= 0
-    )
-      setBallStep(([prevY, prevX]) => [
-        ballCoordY >= 100 || ballCoordY <= 0 ? -prevY : prevY,
-        ballCoordX >= 100 || ballCoordX <= 0 ? -prevX : prevX,
-      ]);
-  }, [ballCoordX, ballCoordY]);
+  }, [isGameStarted]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
@@ -140,7 +124,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       <div className="ui-field">
         <div className="dotted-line"></div>
         <div className="game-field">
-          <Ball x={ballCoordX} y={ballCoordY} />
+          <Ball x={ballState[1]} y={ballState[0]} />
         </div>
         <div className="cards-wrapper">
           <PlayerCard
