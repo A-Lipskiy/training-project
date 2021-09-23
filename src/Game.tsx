@@ -11,6 +11,7 @@ type Props = {
 };
 
 const PLAYER_COORD_INTERVAL = 40;
+const BALL_COORD_INTERVAL = 30;
 const PLAYER_COORD_STEP = 5;
 
 function calculateCoordMinusStep(oldCoord: number): number {
@@ -21,8 +22,12 @@ function calculateCoordPlusStep(oldCoord: number): number {
   return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
 }
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballCoords] = useState([50, 50]);
-  const [ballCoordY, ballCoordX] = ballCoords;
+  const [ballState, setBallState] = useState({
+    x: 50,
+    y: 50,
+    stepX: 2,
+    stepY: 1,
+  });
   const [player1Coord, setPlayer1Coord] = useState(50);
   const [player2Coord, setPlayer2Coord] = useState(50);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -43,7 +48,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key);
       switch (e.key) {
         case 'w':
         case 'W':
@@ -93,6 +97,25 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     }
   }, [isGameStarted]);
 
+  useEffect(() => {
+    if (!isGameStarted) return;
+
+    const interval = setInterval(() => {
+      setBallState(({ x, y, stepX, stepY }) => {
+        return {
+          x: x + stepX,
+          y: y + stepY,
+          stepX: x + stepX >= 100 || x + stepX <= 0 ? -stepX : stepX,
+          stepY: y + stepY >= 100 || y + stepY <= 0 ? -stepY : stepY,
+        };
+      });
+    }, BALL_COORD_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isGameStarted]);
+
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
@@ -103,7 +126,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       <div className="ui-field">
         <div className="dotted-line"></div>
         <div className="game-field">
-          <Ball x={ballCoordX} y={ballCoordY} />
+          <Ball x={ballState.x} y={ballState.y} />
         </div>
         <div className="cards-wrapper">
           <PlayerCard
