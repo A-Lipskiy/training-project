@@ -35,11 +35,11 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     let secondPlayerInt: TimeoutResult = null;
 
     const handleKeyUp = (e?: KeyboardEvent) => {
-      if (!e || (e && ['w', 'W', 's', 'S'].includes(e.key))) {
+      if (!e || ['w', 'W', 's', 'S'].includes(e.key)) {
         if (firstPlayerInt) clearInterval(firstPlayerInt);
         firstPlayerInt = null;
       }
-      if (!e || (e && ['ArrowUp', 'ArrowDown'].includes(e.key))) {
+      if (!e || ['ArrowUp', 'ArrowDown'].includes(e.key)) {
         if (secondPlayerInt) clearInterval(secondPlayerInt);
         secondPlayerInt = null;
       }
