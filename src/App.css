@@ -131,8 +131,6 @@
   position: absolute;
   left: -10%;
   transform: translate(0, -50%);
-  transition-duration: 0.1s;
-  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .right-card {
   height: 20vmin;
@@ -141,8 +139,6 @@
   position: absolute;
   left: 100%;
   transform: translate(0, -50%);
-  transition-duration: 0.1s;
-  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .player-card-image {
   width: 90%;
@@ -153,4 +149,17 @@
   width: 80vmin;
   position: absolute;
   top: 10vmin;
+}
+.score {
+  font: 3vmin Helvetica, Sans-Serif;
+  color: #291e33;
+  width: 80vmin;
+  margin: auto;
+  margin-bottom: 5vmin;
+}
+.first-player-score {
+  float: left;
+}
+.second-player-score {
+  float: right;
 }
