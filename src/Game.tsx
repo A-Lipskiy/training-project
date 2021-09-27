@@ -99,13 +99,17 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     };
 
-    if (!isGameStarted)
-      document.addEventListener('keydown', (e) => {
-        if (e.key === ' ') {
-          setIsGameStarted(true);
-          setWinner(null);
-        }
-      });
+    const handleStartGame = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        setIsGameStarted(true);
+        setWinner(null);
+      }
+    };
+
+    if (!isGameStarted) {
+      document.addEventListener('keydown', handleStartGame);
+      return () => document.removeEventListener('keydown', handleStartGame);
+    }
 
     if (isGameStarted) {
       document.addEventListener('keydown', handleKeyDown);

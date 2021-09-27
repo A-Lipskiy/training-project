@@ -15,12 +15,10 @@ export function Score({
   return (
     <div className="score">
       <span className="first-player-score">
-        {capitalize(firstPlayer)}
-        {firstPlayerScore}
+        {capitalize(firstPlayer)}: {firstPlayerScore}
       </span>
       <span className="second-player-score">
-        {capitalize(secondPlayer)}
-        {secondPlayerScore}
+        {capitalize(secondPlayer)}: {secondPlayerScore}
       </span>
     </div>
   );
