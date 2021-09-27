@@ -25,18 +25,21 @@ const initialScoreState = {
   secondPlayerScore: 0,
 };
 
-const PLAYER_COORD_INTERVAL = 20;
+const PLAYER_COORD_INTERVAL = 10;
 const BALL_COORD_INTERVAL = 30;
-const PLAYER_COORD_STEP = 5;
-const MAX_BALL_OFFSET = 22;
-const MIN_BALL_OFFSET = 11;
+const PLAYER_COORD_STEP = 2;
+const HALF_CARD_COORDS = 12;
 
 function calculateCoordMinusStep(oldCoord: number): number {
-  return oldCoord > 0 ? oldCoord - PLAYER_COORD_STEP : oldCoord;
+  return oldCoord - HALF_CARD_COORDS > 0
+    ? oldCoord - PLAYER_COORD_STEP
+    : oldCoord;
 }
 
 function calculateCoordPlusStep(oldCoord: number): number {
-  return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
+  return oldCoord + HALF_CARD_COORDS < 100
+    ? oldCoord + PLAYER_COORD_STEP
+    : oldCoord;
 }
 function getArrayRandomElement(arr: number[]): number {
   const rand = Math.floor(Math.random() * arr.length);
@@ -153,12 +156,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
 
     if (ballX === 0) {
       if (
-        (ballY >= 50 &&
-          (ballY + MAX_BALL_OFFSET <= player1Coord ||
-            ballY - MIN_BALL_OFFSET >= player1Coord)) ||
-        (ballY <= 50 &&
-          (ballY + MIN_BALL_OFFSET <= player1Coord ||
-            ballY - MAX_BALL_OFFSET >= player1Coord))
+        ballY + HALF_CARD_COORDS <= player1Coord ||
+        ballY - HALF_CARD_COORDS >= player1Coord
       ) {
         setGameScore((prevState) => {
           return {
@@ -170,12 +169,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     } else if (ballX === 100) {
       if (
-        (ballY >= 50 &&
-          (ballY + MAX_BALL_OFFSET <= player2Coord ||
-            ballY - MIN_BALL_OFFSET >= player2Coord)) ||
-        (ballY <= 50 &&
-          (ballY + MIN_BALL_OFFSET <= player2Coord ||
-            ballY - MAX_BALL_OFFSET >= player2Coord))
+        ballY + HALF_CARD_COORDS <= player2Coord ||
+        ballY - HALF_CARD_COORDS >= player2Coord
       ) {
         setGameScore((prevState) => {
           return {
@@ -228,18 +223,16 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         <div className="game-field">
           <Ball x={ballState.ballX} y={ballState.ballY} />
         </div>
-        <div className="cards-wrapper">
-          <PlayerCard
-            y={player1Coord}
-            pokemonName={pokemonOne}
-            playerCardType="left"
-          />
-          <PlayerCard
-            y={player2Coord}
-            pokemonName={pokemonTwo}
-            playerCardType="right"
-          />
-        </div>
+        <PlayerCard
+          y={player1Coord}
+          pokemonName={pokemonOne}
+          playerCardType="left"
+        />
+        <PlayerCard
+          y={player2Coord}
+          pokemonName={pokemonTwo}
+          playerCardType="right"
+        />
       </div>
       <button
         className={`button-start-game ${

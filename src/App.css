@@ -125,7 +125,7 @@
   transform: translate(-50%, -50%);
 }
 .left-card {
-  height: 20vmin;
+  height: 19vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
@@ -133,7 +133,7 @@
   transform: translate(0, -50%);
 }
 .right-card {
-  height: 20vmin;
+  height: 19vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
@@ -144,12 +144,7 @@
   width: 90%;
   height: 100%;
 }
-.cards-wrapper {
-  height: 60vmin;
-  width: 80vmin;
-  position: absolute;
-  top: 10vmin;
-}
+
 .score {
   font: 3vmin Helvetica, Sans-Serif;
   color: #291e33;
