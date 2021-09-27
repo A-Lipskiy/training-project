@@ -28,16 +28,16 @@ const initialScoreState = {
 const PLAYER_COORD_INTERVAL = 10;
 const BALL_COORD_INTERVAL = 30;
 const PLAYER_COORD_STEP = 2;
-const HALF_CARD_COORDS = 12;
+const HALF_CARD_SIZE = 14;
 
 function calculateCoordMinusStep(oldCoord: number): number {
-  return oldCoord - HALF_CARD_COORDS > 0
+  return oldCoord - HALF_CARD_SIZE >= 0
     ? oldCoord - PLAYER_COORD_STEP
     : oldCoord;
 }
 
 function calculateCoordPlusStep(oldCoord: number): number {
-  return oldCoord + HALF_CARD_COORDS < 100
+  return oldCoord + HALF_CARD_SIZE <= 100
     ? oldCoord + PLAYER_COORD_STEP
     : oldCoord;
 }
@@ -112,9 +112,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     if (!isGameStarted) {
       document.addEventListener('keydown', handleStartGame);
       return () => document.removeEventListener('keydown', handleStartGame);
-    }
-
-    if (isGameStarted) {
+    } else {
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keyup', handleKeyUp);
       return () => {
@@ -156,8 +154,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
 
     if (ballX === 0) {
       if (
-        ballY + HALF_CARD_COORDS <= player1Coord ||
-        ballY - HALF_CARD_COORDS >= player1Coord
+        ballY + HALF_CARD_SIZE <= player1Coord ||
+        ballY - HALF_CARD_SIZE >= player1Coord
       ) {
         setGameScore((prevState) => {
           return {
@@ -169,8 +167,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     } else if (ballX === 100) {
       if (
-        ballY + HALF_CARD_COORDS <= player2Coord ||
-        ballY - HALF_CARD_COORDS >= player2Coord
+        ballY + HALF_CARD_SIZE <= player2Coord ||
+        ballY - HALF_CARD_SIZE >= player2Coord
       ) {
         setGameScore((prevState) => {
           return {
@@ -185,7 +183,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
 
   useEffect(() => {
     if (gameScore.firstPlayerScore === 5 || gameScore.secondPlayerScore === 5) {
-      setBallState(initialBallState);
       setGameScore(initialScoreState);
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
@@ -194,12 +191,10 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           ? pokemonOne
           : pokemonTwo
       );
-      setBallState((prevState) => {
-        return {
-          ...prevState,
-          ballStepX: getArrayRandomElement([-2, 2]),
-          ballStepY: getArrayRandomElement([-1, 1]),
-        };
+      setBallState({
+        ...initialBallState,
+        ballStepX: getArrayRandomElement([-2, 2]),
+        ballStepY: getArrayRandomElement([-1, 1]),
       });
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
