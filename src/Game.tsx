@@ -28,16 +28,16 @@ const initialScoreState = {
 const PLAYER_COORD_INTERVAL = 10;
 const BALL_COORD_INTERVAL = 30;
 const PLAYER_COORD_STEP = 2;
-const HALF_CARD_SIZE = 14;
+const HALF_CARD_SIZE = 12;
 
 function calculateCoordMinusStep(oldCoord: number): number {
-  return oldCoord - HALF_CARD_SIZE >= 0
+  return oldCoord - HALF_CARD_SIZE > 0
     ? oldCoord - PLAYER_COORD_STEP
     : oldCoord;
 }
 
 function calculateCoordPlusStep(oldCoord: number): number {
-  return oldCoord + HALF_CARD_SIZE <= 100
+  return oldCoord + HALF_CARD_SIZE < 100
     ? oldCoord + PLAYER_COORD_STEP
     : oldCoord;
 }
