@@ -2,6 +2,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Ball } from './Ball';
 import { PlayerCard } from './PlayerCard';
+import { Score } from './Score';
+import { Modal } from './Modal';
 
 type TimeoutResult = ReturnType<typeof setTimeout> | null;
 
@@ -10,88 +12,113 @@ type Props = {
   pokemonTwo: string;
 };
 
-const PLAYER_COORD_INTERVAL = 40;
+const initialBallState = {
+  ballX: 50,
+  ballY: 50,
+  ballStepX: getArrayRandomElement([-2, 2]),
+  ballStepY: getArrayRandomElement([-1, 1]),
+};
+const initialCardsState = 50;
+
+const initialScoreState = {
+  firstPlayerScore: 0,
+  secondPlayerScore: 0,
+};
+
+const PLAYER_COORD_INTERVAL = 10;
 const BALL_COORD_INTERVAL = 30;
-const PLAYER_COORD_STEP = 5;
+const PLAYER_COORD_STEP = 2;
+const HALF_CARD_SIZE = 12;
 
 function calculateCoordMinusStep(oldCoord: number): number {
-  return oldCoord > 0 ? oldCoord - PLAYER_COORD_STEP : oldCoord;
+  return oldCoord - HALF_CARD_SIZE > 0
+    ? oldCoord - PLAYER_COORD_STEP
+    : oldCoord;
 }
 
 function calculateCoordPlusStep(oldCoord: number): number {
-  return oldCoord < 100 ? oldCoord + PLAYER_COORD_STEP : oldCoord;
+  return oldCoord + HALF_CARD_SIZE < 100
+    ? oldCoord + PLAYER_COORD_STEP
+    : oldCoord;
 }
+function getArrayRandomElement(arr: number[]): number {
+  const rand = Math.floor(Math.random() * arr.length);
+  return arr[rand];
+}
+export function capitalize(strToCapitalize: string): string {
+  return strToCapitalize.charAt(0).toUpperCase() + strToCapitalize.slice(1);
+}
+
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
-  const [ballState, setBallState] = useState({
-    x: 50,
-    y: 50,
-    stepX: 2,
-    stepY: 1,
-  });
-  const [player1Coord, setPlayer1Coord] = useState(50);
-  const [player2Coord, setPlayer2Coord] = useState(50);
+  const [ballState, setBallState] = useState(initialBallState);
+  const [gameScore, setGameScore] = useState(initialScoreState);
+  const [player1Coord, setPlayer1Coord] = useState(initialCardsState);
+  const [player2Coord, setPlayer2Coord] = useState(initialCardsState);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [winner, setWinner] = useState<string | null>();
 
   useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
     let secondPlayerInt: TimeoutResult = null;
-
     const handleKeyUp = (e?: KeyboardEvent) => {
-      if (!e || ['w', 'W', 's', 'S'].includes(e.key)) {
+      if (
+        !e ||
+        ['w', 'W', 's', 'S', 'Ц', 'ц', 'і', 'І', 'Ы', 'ы'].includes(e.key)
+      ) {
         if (firstPlayerInt) clearInterval(firstPlayerInt);
         firstPlayerInt = null;
       }
-      if (!e || ['o', 'O', 'l', 'L'].includes(e.key)) {
+      if (!e || ['o', 'O', 'l', 'L', 'щ', 'Щ', 'д', 'Д'].includes(e.key)) {
         if (secondPlayerInt) clearInterval(secondPlayerInt);
         secondPlayerInt = null;
       }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case 'w':
-        case 'W':
-          firstPlayerInt =
-            firstPlayerInt ||
-            setInterval(() => {
-              setPlayer1Coord(calculateCoordMinusStep);
-            }, PLAYER_COORD_INTERVAL);
-
-          break;
-        case 's':
-        case 'S':
-          firstPlayerInt =
-            firstPlayerInt ||
-            setInterval(() => {
-              setPlayer1Coord(calculateCoordPlusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        case 'o':
-        case 'O':
-          secondPlayerInt =
-            secondPlayerInt ||
-            setInterval(() => {
-              setPlayer2Coord(calculateCoordMinusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        case 'l':
-        case 'L':
-          secondPlayerInt =
-            secondPlayerInt ||
-            setInterval(() => {
-              setPlayer2Coord(calculateCoordPlusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        default:
-          break;
+      if (['w', 'W', 'Ц', 'ц'].includes(e.key)) {
+        firstPlayerInt =
+          firstPlayerInt ||
+          setInterval(() => {
+            setPlayer1Coord(calculateCoordMinusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['s', 'S', 'Ы', 'ы', 'І', 'і'].includes(e.key)) {
+        firstPlayerInt =
+          firstPlayerInt ||
+          setInterval(() => {
+            setPlayer1Coord(calculateCoordPlusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['O', 'o', 'Щ', 'щ'].includes(e.key)) {
+        secondPlayerInt =
+          secondPlayerInt ||
+          setInterval(() => {
+            setPlayer2Coord(calculateCoordMinusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['L', 'l', 'Д', 'д'].includes(e.key)) {
+        secondPlayerInt =
+          secondPlayerInt ||
+          setInterval(() => {
+            setPlayer2Coord(calculateCoordPlusStep);
+          }, PLAYER_COORD_INTERVAL);
       }
     };
-    if (isGameStarted) {
+
+    const handleStartGame = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        setIsGameStarted(true);
+        setWinner(null);
+      }
+    };
+
+    if (!isGameStarted) {
+      document.addEventListener('keydown', handleStartGame);
+      return () => document.removeEventListener('keydown', handleStartGame);
+    } else {
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keyup', handleKeyUp);
       return () => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
+
         handleKeyUp();
       };
     }
@@ -101,12 +128,18 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     if (!isGameStarted) return;
 
     const interval = setInterval(() => {
-      setBallState(({ x, y, stepX, stepY }) => {
+      setBallState(({ ballX, ballY, ballStepX, ballStepY }) => {
         return {
-          x: x + stepX,
-          y: y + stepY,
-          stepX: x + stepX >= 100 || x + stepX <= 0 ? -stepX : stepX,
-          stepY: y + stepY >= 100 || y + stepY <= 0 ? -stepY : stepY,
+          ballX: ballX + ballStepX,
+          ballY: ballY + ballStepY,
+          ballStepX:
+            ballX + ballStepX >= 100 || ballX + ballStepX <= 0
+              ? -ballStepX
+              : ballStepX,
+          ballStepY:
+            ballY + ballStepY >= 100 || ballY + ballStepY <= 0
+              ? -ballStepY
+              : ballStepY,
         };
       });
     }, BALL_COORD_INTERVAL);
@@ -116,36 +149,94 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     };
   }, [isGameStarted]);
 
+  useEffect(() => {
+    const { ballX, ballY } = ballState;
+
+    if (ballX === 0) {
+      if (
+        ballY + HALF_CARD_SIZE <= player1Coord ||
+        ballY - HALF_CARD_SIZE >= player1Coord
+      ) {
+        setGameScore((prevState) => {
+          return {
+            ...prevState,
+            secondPlayerScore: prevState.secondPlayerScore + 1,
+          };
+        });
+        setIsGameStarted(false);
+      }
+    } else if (ballX === 100) {
+      if (
+        ballY + HALF_CARD_SIZE <= player2Coord ||
+        ballY - HALF_CARD_SIZE >= player2Coord
+      ) {
+        setGameScore((prevState) => {
+          return {
+            ...prevState,
+            firstPlayerScore: prevState.firstPlayerScore + 1,
+          };
+        });
+        setIsGameStarted(false);
+      }
+    }
+  }, [ballState, player1Coord, player2Coord]);
+
+  useEffect(() => {
+    if (gameScore.firstPlayerScore === 5 || gameScore.secondPlayerScore === 5) {
+      setGameScore(initialScoreState);
+      setPlayer1Coord(initialCardsState);
+      setPlayer2Coord(initialCardsState);
+      setWinner(
+        gameScore.firstPlayerScore > gameScore.secondPlayerScore
+          ? pokemonOne
+          : pokemonTwo
+      );
+      setBallState({
+        ...initialBallState,
+        ballStepX: getArrayRandomElement([-2, 2]),
+        ballStepY: getArrayRandomElement([-1, 1]),
+      });
+    }
+  }, [gameScore, pokemonOne, pokemonTwo]);
+
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
+      {winner && <Modal winner={winner} />}
       <Link to="/">
         <button className="button-close-game">Close game</button>
       </Link>
       <h1 className="header-text">Pokemons ping-pong</h1>
+      <Score
+        firstPlayer={pokemonOne}
+        secondPlayer={pokemonTwo}
+        firstPlayerScore={gameScore.firstPlayerScore}
+        secondPlayerScore={gameScore.secondPlayerScore}
+      />
       <div className="ui-field">
         <div className="dotted-line"></div>
         <div className="game-field">
-          <Ball x={ballState.x} y={ballState.y} />
+          <Ball x={ballState.ballX} y={ballState.ballY} />
         </div>
-        <div className="cards-wrapper">
-          <PlayerCard
-            y={player1Coord}
-            pokemonName={pokemonOne}
-            playerCardType="left"
-          />
-          <PlayerCard
-            y={player2Coord}
-            pokemonName={pokemonTwo}
-            playerCardType="right"
-          />
-        </div>
+        <PlayerCard
+          y={player1Coord}
+          pokemonName={pokemonOne}
+          playerCardType="left"
+        />
+        <PlayerCard
+          y={player2Coord}
+          pokemonName={pokemonTwo}
+          playerCardType="right"
+        />
       </div>
       <button
         className={`button-start-game ${
           !isGameStarted ? 'button-visible' : ''
         }`}
-        onClick={() => setIsGameStarted(true)}
+        onClick={() => {
+          setIsGameStarted(true);
+          setWinner(null);
+        }}
       >
         Start Game
       </button>

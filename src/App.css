@@ -125,32 +125,61 @@
   transform: translate(-50%, -50%);
 }
 .left-card {
-  height: 20vmin;
+  height: 19vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
   left: -10%;
   transform: translate(0, -50%);
-  transition-duration: 0.1s;
-  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .right-card {
-  height: 20vmin;
+  height: 19vmin;
   width: 10%;
   background-color: #291e33;
   position: absolute;
   left: 100%;
   transform: translate(0, -50%);
-  transition-duration: 0.1s;
-  transition-timing-function: cubic-bezier(0, 0.33, 0.66, 0.99);
 }
 .player-card-image {
   width: 90%;
   height: 100%;
 }
-.cards-wrapper {
-  height: 60vmin;
+
+.score {
+  font: 3vmin Helvetica, Sans-Serif;
+  color: #291e33;
   width: 80vmin;
-  position: absolute;
-  top: 10vmin;
+  margin: auto;
+  margin-bottom: 5vmin;
+}
+.first-player-score {
+  float: left;
+}
+.second-player-score {
+  float: right;
+}
+.modal {
+  height: 40vmin;
+  width: 40vmin;
+  position: fixed;
+  top: 50vmin;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  display: block;
+}
+.modal_content {
+  margin: 15% auto;
+  border: none;
+  z-index: 2;
+  background-color: transparent;
+  color: #f8b195;
+  display: inline;
+  position: relative;
+  font: 2vmin Helvetica, Sans-Serif;
+}
+
+.modal-text {
+  padding-top: 15%;
 }
