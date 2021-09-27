@@ -163,3 +163,28 @@
 .second-player-score {
   float: right;
 }
+.modal {
+  height: 40vmin;
+  width: 40vmin;
+  position: fixed;
+  top: 50vmin;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  display: block;
+}
+.modal_content {
+  margin: 15% auto;
+  border: none;
+  z-index: 2;
+  background-color: transparent;
+  color: #f8b195;
+  display: inline;
+  position: relative;
+  font: 2vmin Helvetica, Sans-Serif;
+}
+
+.modal-text {
+  padding-top: 15%;
+}
