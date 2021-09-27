@@ -42,6 +42,9 @@ function getArrayRandomElement(arr: number[]): number {
   const rand = Math.floor(Math.random() * arr.length);
   return arr[rand];
 }
+export function capitalize(strToCapitalize: string): string {
+  return strToCapitalize.charAt(0).toUpperCase() + strToCapitalize.slice(1);
+}
 
 export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [ballState, setBallState] = useState(initialBallState);
@@ -69,52 +72,30 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case 'w':
-        case 'W':
-        case 'Ц':
-        case 'ц':
-          firstPlayerInt =
-            firstPlayerInt ||
-            setInterval(() => {
-              setPlayer1Coord(calculateCoordMinusStep);
-            }, PLAYER_COORD_INTERVAL);
-
-          break;
-        case 's':
-        case 'S':
-        case 'ы':
-        case 'Ы':
-        case 'І':
-        case 'і':
-          firstPlayerInt =
-            firstPlayerInt ||
-            setInterval(() => {
-              setPlayer1Coord(calculateCoordPlusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        case 'o':
-        case 'O':
-        case 'щ':
-        case 'Щ':
-          secondPlayerInt =
-            secondPlayerInt ||
-            setInterval(() => {
-              setPlayer2Coord(calculateCoordMinusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        case 'l':
-        case 'L':
-        case 'Д':
-        case 'д':
-          secondPlayerInt =
-            secondPlayerInt ||
-            setInterval(() => {
-              setPlayer2Coord(calculateCoordPlusStep);
-            }, PLAYER_COORD_INTERVAL);
-          break;
-        default:
-          break;
+      if (['w', 'W', 'Ц', 'ц'].includes(e.key)) {
+        firstPlayerInt =
+          firstPlayerInt ||
+          setInterval(() => {
+            setPlayer1Coord(calculateCoordMinusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['s', 'S', 'Ы', 'ы', 'І', 'і'].includes(e.key)) {
+        firstPlayerInt =
+          firstPlayerInt ||
+          setInterval(() => {
+            setPlayer1Coord(calculateCoordPlusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['O', 'o', 'Щ', 'щ'].includes(e.key)) {
+        secondPlayerInt =
+          secondPlayerInt ||
+          setInterval(() => {
+            setPlayer2Coord(calculateCoordMinusStep);
+          }, PLAYER_COORD_INTERVAL);
+      } else if (['L', 'l', 'Д', 'д'].includes(e.key)) {
+        secondPlayerInt =
+          secondPlayerInt ||
+          setInterval(() => {
+            setPlayer2Coord(calculateCoordPlusStep);
+          }, PLAYER_COORD_INTERVAL);
       }
     };
 
@@ -214,8 +195,13 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           ? pokemonOne
           : pokemonTwo
       );
-      initialBallState.ballStepX = getArrayRandomElement([-2, 2]);
-      initialBallState.ballStepY = getArrayRandomElement([-1, 1]);
+      setBallState((prevState) => {
+        return {
+          ...prevState,
+          ballStepX: getArrayRandomElement([-2, 2]),
+          ballStepY: getArrayRandomElement([-1, 1]),
+        };
+      });
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
 

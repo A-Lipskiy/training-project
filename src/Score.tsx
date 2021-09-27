@@ -1,3 +1,4 @@
+import { capitalize } from './Game';
 type Props = {
   firstPlayer: string;
   secondPlayer: string;
@@ -14,11 +15,11 @@ export function Score({
   return (
     <div className="score">
       <span className="first-player-score">
-        {firstPlayer.charAt(0).toUpperCase() + firstPlayer.slice(1)}:{' '}
+        {capitalize(firstPlayer)}
         {firstPlayerScore}
       </span>
       <span className="second-player-score">
-        {secondPlayer.charAt(0).toUpperCase() + secondPlayer.slice(1)}:{' '}
+        {capitalize(secondPlayer)}
         {secondPlayerScore}
       </span>
     </div>
