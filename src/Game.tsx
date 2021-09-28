@@ -4,6 +4,7 @@ import { Ball } from './Ball';
 import { PlayerCard } from './PlayerCard';
 import { Score } from './Score';
 import { Modal } from './Modal';
+import { Camera } from './Camera';
 
 type TimeoutResult = ReturnType<typeof setTimeout> | null;
 
@@ -203,6 +204,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
+      {isGameStarted && <Camera />}
       {winner && <Modal winner={winner} />}
       <Link to="/">
         <button className="button-close-game">Close game</button>
