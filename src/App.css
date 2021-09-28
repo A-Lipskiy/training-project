@@ -131,6 +131,8 @@
   position: absolute;
   left: -10%;
   transform: translate(0, -50%);
+  border-top: 1px solid #291e33;
+  border-bottom: 1px solid #291e33;
 }
 .right-card {
   height: 19vmin;
@@ -139,6 +141,8 @@
   position: absolute;
   left: 100%;
   transform: translate(0, -50%);
+  border-top: 1px solid #291e33;
+  border-bottom: 1px solid #291e33;
 }
 .player-card-image {
   width: 90%;
