@@ -25,10 +25,11 @@ const initialScoreState = {
   secondPlayerScore: 0,
 };
 
-const PLAYER_COORD_INTERVAL = 10;
-const BALL_COORD_INTERVAL = 30;
+const PLAYER_COORD_INTERVAL = 15;
+const BALL_COORD_INTERVAL = 40;
 const PLAYER_COORD_STEP = 2;
 const HALF_CARD_SIZE = 12;
+const EFFECTIVE_HALF_CARD_SIZE = HALF_CARD_SIZE + 4;
 
 function calculateCoordMinusStep(oldCoord: number): number {
   return oldCoord - HALF_CARD_SIZE > 0
@@ -154,8 +155,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
 
     if (ballX === 0) {
       if (
-        ballY + HALF_CARD_SIZE <= player1Coord ||
-        ballY - HALF_CARD_SIZE >= player1Coord
+        ballY + EFFECTIVE_HALF_CARD_SIZE <= player1Coord ||
+        ballY - EFFECTIVE_HALF_CARD_SIZE >= player1Coord
       ) {
         setGameScore((prevState) => {
           return {
@@ -167,8 +168,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     } else if (ballX === 100) {
       if (
-        ballY + HALF_CARD_SIZE <= player2Coord ||
-        ballY - HALF_CARD_SIZE >= player2Coord
+        ballY + EFFECTIVE_HALF_CARD_SIZE <= player2Coord ||
+        ballY - EFFECTIVE_HALF_CARD_SIZE >= player2Coord
       ) {
         setGameScore((prevState) => {
           return {
