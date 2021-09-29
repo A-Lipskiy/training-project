@@ -6,34 +6,35 @@ export function Camera(): JSX.Element {
   const [stream, setStream] = useState<Stream>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
 
-  async function startVideo(): Promise<void> {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setStream(stream);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   useEffect(() => {
-    const copyCameraRef = cameraRef;
+    const camera = cameraRef.current;
 
-    if (!stream || !copyCameraRef.current) return;
+    if (!stream || !camera) return;
 
-    copyCameraRef.current.srcObject = stream;
-    copyCameraRef.current.play();
+    camera.srcObject = stream;
+    camera.play();
 
     return () => {
-      copyCameraRef.current?.pause();
+      camera.pause();
     };
-  }, [cameraRef, stream]);
+  }, [stream]);
 
   useEffect(() => {
-    startVideo();
-    return () => setStream(null);
-  }, []);
+    let cameraStream: Stream;
 
+    async function startVideo() {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        setStream(cameraStream);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    startVideo();
+
+    return () => cameraStream?.getTracks().forEach((track) => track.stop());
+  }, []);
   return <video muted autoPlay className="camera" ref={cameraRef}></video>;
 }
