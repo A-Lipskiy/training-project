@@ -16,15 +16,23 @@ export function Camera(): JSX.Element {
       console.log(e);
     }
   }
+
   useEffect(() => {
-    if (stream && cameraRef.current) {
-      cameraRef.current.srcObject = stream;
-      cameraRef.current.play();
-    }
+    const copyCameraRef = cameraRef;
+
+    if (!stream || !copyCameraRef.current) return;
+
+    copyCameraRef.current.srcObject = stream;
+    copyCameraRef.current.play();
+
+    return () => {
+      copyCameraRef.current?.pause();
+    };
   }, [cameraRef, stream]);
 
   useEffect(() => {
     startVideo();
+    return () => setStream(null);
   }, []);
 
   return <video muted autoPlay className="camera" ref={cameraRef}></video>;
