@@ -39,7 +39,7 @@ export function Camera({ onSetCoord }: Props): JSX.Element {
         poses[0].keypoints[9].y >= TOP_BORDER &&
         poses[0].keypoints[9].y <= BOTTOM_BORDER
       ) {
-        onSetCoord(Math.floor(poses[0].keypoints[9].y / 3.5));
+        onSetCoord(Math.floor(poses[0].keypoints[9].y - 50 / 3.5));
       }
     }
 
