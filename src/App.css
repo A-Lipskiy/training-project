@@ -191,7 +191,9 @@
   position: absolute;
   top: 40vmin;
   left: 10vmin;
-  width: 300px;
-  height: 250px;
+  width: 100px;
+  height: 100px;
+  z-index: 1000;
   background-color: white;
+  object-fit: cover;
 }
