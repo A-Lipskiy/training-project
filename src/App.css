@@ -187,3 +187,12 @@
 .modal-text {
   padding-top: 15%;
 }
+.camera {
+  position: absolute;
+  top: 40vmin;
+  left: 10vmin;
+  width: 600px;
+  height: 600px;
+  z-index: 1000;
+  background-color: white;
+}
