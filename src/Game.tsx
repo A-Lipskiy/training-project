@@ -187,17 +187,17 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
 
-      setWinner(
-        gameScore.firstPlayerScore > gameScore.secondPlayerScore
-          ? pokemonOne
-          : pokemonTwo
-      );
+      // setWinner(
+      //   gameScore.firstPlayerScore > gameScore.secondPlayerScore
+      //     ? pokemonOne
+      //     : pokemonTwo
+      // );
       setBallState({
         ...initialBallState,
         ballStepX: getArrayRandomElement([-2, 2]),
         ballStepY: getArrayRandomElement([-1, 1]),
       });
-      setIsGameStarted(false);
+      // setIsGameStarted(false);
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
 
