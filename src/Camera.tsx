@@ -20,11 +20,9 @@ export function Camera(): JSX.Element {
   }, [stream]);
 
   useEffect(() => {
-    let cameraStream: Stream;
-
     async function startVideo() {
       try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
+        const cameraStream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
         setStream(cameraStream);
@@ -34,7 +32,11 @@ export function Camera(): JSX.Element {
     }
     startVideo();
 
-    return () => cameraStream?.getTracks().forEach((track) => track.stop());
+    return () =>
+      setStream((stream) => {
+        stream?.getTracks().forEach((track) => track.stop());
+        return stream;
+      });
   }, []);
   return <video muted autoPlay className="camera" ref={cameraRef}></video>;
 }

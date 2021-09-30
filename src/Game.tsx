@@ -165,7 +165,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             secondPlayerScore: prevState.secondPlayerScore + 1,
           };
         });
-        setIsGameStarted(false);
       }
     } else if (ballX === 100) {
       if (
@@ -178,7 +177,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerScore: prevState.firstPlayerScore + 1,
           };
         });
-        setIsGameStarted(false);
       }
     }
   }, [ballState, player1Coord, player2Coord]);
@@ -188,6 +186,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       setGameScore(initialScoreState);
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
+
       setWinner(
         gameScore.firstPlayerScore > gameScore.secondPlayerScore
           ? pokemonOne
@@ -198,6 +197,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         ballStepX: getArrayRandomElement([-2, 2]),
         ballStepY: getArrayRandomElement([-1, 1]),
       });
+      setIsGameStarted(false);
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
 
