@@ -204,7 +204,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
-      {isGameStarted && <Camera />}
+      {isGameStarted && <Camera onSetCoord={setPlayer1Coord} />}
       {winner && <Modal winner={winner} />}
       <Link to="/">
         <button className="button-close-game">Close game</button>

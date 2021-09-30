@@ -4,13 +4,16 @@ import '@tensorflow/tfjs-backend-webgl';
 import { MoveNetModelConfig } from '@tensorflow-models/pose-detection';
 
 type Stream = MediaStream | null;
-
+type Props = {
+  onSetCoord: (y: number) => void;
+};
 const model = poseDetection.SupportedModels.MoveNet;
 const moveNetConfig: MoveNetModelConfig = {
   modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
 };
-
-export function Camera(): JSX.Element {
+const TOP_BORDER = 50;
+const BOTTOM_BORDER = 400;
+export function Camera({ onSetCoord }: Props): JSX.Element {
   const [stream, setStream] = useState<Stream>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const [detector, setDetector] = useState<poseDetection.PoseDetector | null>(
@@ -31,18 +34,23 @@ export function Camera(): JSX.Element {
         maxPoses: 1,
         flipHorizontal: false,
       });
-      if (poses.length !== 0)
-        console.log(poses[0].keypoints[9], poses[0].keypoints[10]);
+      if (
+        poses.length !== 0 &&
+        poses[0].keypoints[9].y >= TOP_BORDER &&
+        poses[0].keypoints[9].y <= BOTTOM_BORDER
+      ) {
+        onSetCoord(Math.floor(poses[0].keypoints[9].y / 3.5));
+      }
     }
 
     const interval = setInterval(() => {
       logAICoords(camera);
-    }, 3000);
+    }, 500);
 
     return () => {
       clearInterval(interval);
     };
-  }, [detector, stream]);
+  }, [detector, onSetCoord, stream]);
 
   useEffect(() => {
     return () => detector?.dispose();
