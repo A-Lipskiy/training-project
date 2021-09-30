@@ -189,10 +189,11 @@
 }
 .camera {
   position: absolute;
-  top: 40vmin;
-  left: 10vmin;
-  width: 600px;
-  height: 600px;
-  z-index: 1000;
+  top: 10vmin;
+  left: 5vmin;
+  width: 20%;
+  height: 20%;
+  z-index: 10;
+  object-fit: cover;
   background-color: white;
 }

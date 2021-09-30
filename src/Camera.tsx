@@ -27,8 +27,12 @@ export function Camera(): JSX.Element {
 
     async function logAICoords(video: HTMLVideoElement): Promise<void> {
       if (!detector) return;
-      const poses = await detector.estimatePoses(video);
-      console.log(poses[0].keypoints[9], poses[0].keypoints[10]);
+      const poses = await detector.estimatePoses(video, {
+        maxPoses: 1,
+        flipHorizontal: false,
+      });
+      if (poses.length !== 0)
+        console.log(poses[0].keypoints[9], poses[0].keypoints[10]);
     }
 
     const interval = setInterval(() => {
@@ -43,6 +47,7 @@ export function Camera(): JSX.Element {
   useEffect(() => {
     return () => detector?.dispose();
   }, [detector]);
+
   useEffect(() => {
     return () => stream?.getTracks().forEach((track) => track.stop());
   }, [stream]);
@@ -67,13 +72,10 @@ export function Camera(): JSX.Element {
         console.log(e);
       }
     }
+
     startVideo();
     initAI();
   }, []);
 
-  return (
-    <div>
-      <video muted autoPlay className="camera" ref={cameraRef}></video>
-    </div>
-  );
+  return <video muted autoPlay className="camera" ref={cameraRef}></video>;
 }
