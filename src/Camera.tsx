@@ -4,19 +4,22 @@ import '@tensorflow/tfjs-backend-webgl';
 import { MoveNetModelConfig } from '@tensorflow-models/pose-detection';
 import { HALF_CARD_SIZE } from './Game';
 
-type Stream = MediaStream | null;
 type Props = {
-  onSetCoord: (y: number) => void;
+  onSetPlayer1Coord: (y: number) => void;
+  onSetPlayer2Coord: (y: number) => void;
 };
 const model = poseDetection.SupportedModels.MoveNet;
 const moveNetConfig: MoveNetModelConfig = {
   modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
 };
 const THREASHOLD = 50;
-const MAX_VALUE = 450;
+const MAX_VALUE = 400;
 
-export function Camera({ onSetCoord }: Props): JSX.Element {
-  const [stream, setStream] = useState<Stream>(null);
+export function Camera({
+  onSetPlayer1Coord,
+  onSetPlayer2Coord,
+}: Props): JSX.Element {
+  const [stream, setStream] = useState<MediaStream | null>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const [detector, setDetector] = useState<poseDetection.PoseDetector | null>(
     null
@@ -38,24 +41,27 @@ export function Camera({ onSetCoord }: Props): JSX.Element {
       });
 
       if (poses.length !== 0) {
-        console.log(poses[0].keypoints[9].y);
-        const yCoord = poses[0].keypoints[9].y;
+        const player1Y = poses[0].keypoints[9].y;
+        const player2Y = poses[0].keypoints[10].y;
 
-        if (yCoord < THREASHOLD) onSetCoord(HALF_CARD_SIZE);
-        else if (yCoord > MAX_VALUE - THREASHOLD)
-          onSetCoord(100 - HALF_CARD_SIZE);
-        else {
-          const newPlayerCoord =
-            (Math.floor(yCoord - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
-              100 -
-            HALF_CARD_SIZE * 2;
-          if (newPlayerCoord < HALF_CARD_SIZE) onSetCoord(HALF_CARD_SIZE);
-          else if (newPlayerCoord > 100 - HALF_CARD_SIZE)
-            onSetCoord(100 - HALF_CARD_SIZE);
-          else {
-            onSetCoord(newPlayerCoord);
-          }
-        }
+        const newPlayer1Coord = Math.floor(
+          ((player1Y - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
+            (100 - HALF_CARD_SIZE * 2)
+        );
+        const newPlayer2Coord = Math.floor(
+          ((player2Y - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
+            (100 - HALF_CARD_SIZE * 2)
+        );
+
+        if (newPlayer1Coord < HALF_CARD_SIZE) onSetPlayer1Coord(HALF_CARD_SIZE);
+        else if (newPlayer1Coord > 100 - HALF_CARD_SIZE)
+          onSetPlayer1Coord(100 - HALF_CARD_SIZE);
+        else onSetPlayer1Coord(newPlayer1Coord);
+
+        if (newPlayer2Coord < HALF_CARD_SIZE) onSetPlayer2Coord(HALF_CARD_SIZE);
+        else if (newPlayer2Coord > 100 - HALF_CARD_SIZE)
+          onSetPlayer2Coord(100 - HALF_CARD_SIZE);
+        else onSetPlayer2Coord(newPlayer2Coord);
       }
     }
 
@@ -66,7 +72,7 @@ export function Camera({ onSetCoord }: Props): JSX.Element {
     return () => {
       clearInterval(interval);
     };
-  }, [detector, onSetCoord, stream]);
+  }, [detector, onSetPlayer1Coord, onSetPlayer2Coord, stream]);
 
   useEffect(() => {
     return () => detector?.dispose();
