@@ -58,7 +58,6 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [player2Coord, setPlayer2Coord] = useState(initialCardsState);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [winner, setWinner] = useState<string | null>();
-  let timeout: NodeJS.Timeout;
 
   useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
@@ -218,7 +217,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       setIsGameStarted(false);
       setTimeout(() => setIsGameStarted(true), 1000);
     }
-  }, [gameScore, pokemonOne, pokemonTwo, winner]);
+  }, [gameScore, pokemonOne, pokemonTwo]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
@@ -260,8 +259,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           !isGameStarted ? 'button-visible' : ''
         }`}
         onClick={() => {
-          setWinner(null);
           setIsGameStarted(true);
+          setWinner(null);
         }}
       >
         Start Game
