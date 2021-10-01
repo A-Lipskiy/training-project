@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import { MoveNetModelConfig } from '@tensorflow-models/pose-detection';
+import { HALF_CARD_SIZE } from './Game';
 
 type Stream = MediaStream | null;
 type Props = {
@@ -11,8 +12,9 @@ const model = poseDetection.SupportedModels.MoveNet;
 const moveNetConfig: MoveNetModelConfig = {
   modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
 };
-const TOP_BORDER = 50;
-const BOTTOM_BORDER = 400;
+const THREASHOLD = 50;
+const MAX_VALUE = 450;
+
 export function Camera({ onSetCoord }: Props): JSX.Element {
   const [stream, setStream] = useState<Stream>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
@@ -28,24 +30,38 @@ export function Camera({ onSetCoord }: Props): JSX.Element {
     camera.srcObject = stream;
     camera.play();
 
-    async function logAICoords(video: HTMLVideoElement): Promise<void> {
+    async function changePlayerCoord(video: HTMLVideoElement): Promise<void> {
       if (!detector) return;
       const poses = await detector.estimatePoses(video, {
         maxPoses: 1,
         flipHorizontal: false,
       });
-      if (
-        poses.length !== 0 &&
-        poses[0].keypoints[9].y >= TOP_BORDER &&
-        poses[0].keypoints[9].y <= BOTTOM_BORDER
-      ) {
-        onSetCoord(Math.floor(poses[0].keypoints[9].y - 50 / 3.5));
+
+      if (poses.length !== 0) {
+        console.log(poses[0].keypoints[9].y);
+        const yCoord = poses[0].keypoints[9].y;
+
+        if (yCoord < THREASHOLD) onSetCoord(HALF_CARD_SIZE);
+        else if (yCoord > MAX_VALUE - THREASHOLD)
+          onSetCoord(100 - HALF_CARD_SIZE);
+        else {
+          const newPlayerCoord =
+            (Math.floor(yCoord - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
+              100 -
+            HALF_CARD_SIZE * 2;
+          if (newPlayerCoord < HALF_CARD_SIZE) onSetCoord(HALF_CARD_SIZE);
+          else if (newPlayerCoord > 100 - HALF_CARD_SIZE)
+            onSetCoord(100 - HALF_CARD_SIZE);
+          else {
+            onSetCoord(newPlayerCoord);
+          }
+        }
       }
     }
 
     const interval = setInterval(() => {
-      logAICoords(camera);
-    }, 500);
+      changePlayerCoord(camera);
+    }, 100);
 
     return () => {
       clearInterval(interval);

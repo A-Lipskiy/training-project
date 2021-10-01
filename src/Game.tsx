@@ -29,7 +29,7 @@ const initialScoreState = {
 const PLAYER_COORD_INTERVAL = 15;
 const BALL_COORD_INTERVAL = 40;
 const PLAYER_COORD_STEP = 2;
-const HALF_CARD_SIZE = 12;
+export const HALF_CARD_SIZE = 12;
 const EFFECTIVE_HALF_CARD_SIZE = HALF_CARD_SIZE + 4;
 
 function calculateCoordMinusStep(oldCoord: number): number {
@@ -187,17 +187,17 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
 
-      // setWinner(
-      //   gameScore.firstPlayerScore > gameScore.secondPlayerScore
-      //     ? pokemonOne
-      //     : pokemonTwo
-      // );
+      setWinner(
+        gameScore.firstPlayerScore > gameScore.secondPlayerScore
+          ? pokemonOne
+          : pokemonTwo
+      );
       setBallState({
         ...initialBallState,
         ballStepX: getArrayRandomElement([-2, 2]),
         ballStepY: getArrayRandomElement([-1, 1]),
       });
-      // setIsGameStarted(false);
+      setIsGameStarted(false);
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
 
