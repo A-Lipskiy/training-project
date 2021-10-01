@@ -57,6 +57,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [player1Coord, setPlayer1Coord] = useState(initialCardsState);
   const [player2Coord, setPlayer2Coord] = useState(initialCardsState);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isGamePaused, setIsGamePaused] = useState(false);
   const [winner, setWinner] = useState<string | null>();
 
   useEffect(() => {
@@ -107,27 +108,25 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     const handleStartGame = (e: KeyboardEvent) => {
       if (e.key === ' ') {
         setIsGameStarted(true);
+        setIsGamePaused(false);
         setWinner(null);
       }
     };
 
-    if (!isGameStarted) {
-      document.addEventListener('keydown', handleStartGame);
-      return () => document.removeEventListener('keydown', handleStartGame);
-    } else {
-      document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('keyup', handleKeyUp);
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
+    document.addEventListener('keydown', handleStartGame);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('keydown', handleStartGame);
 
-        handleKeyUp();
-      };
-    }
+      handleKeyUp();
+    };
   }, [isGameStarted]);
 
   useEffect(() => {
-    if (!isGameStarted) return;
+    if (!isGameStarted || isGamePaused) return;
 
     const interval = setInterval(() => {
       setBallState(({ ballX, ballY, ballStepX, ballStepY }) => {
@@ -149,7 +148,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
     return () => {
       clearInterval(interval);
     };
-  }, [isGameStarted]);
+  }, [isGamePaused, isGameStarted]);
 
   useEffect(() => {
     const { ballX, ballY } = ballState;
@@ -182,7 +181,10 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   }, [ballState, player1Coord, player2Coord]);
 
   useEffect(() => {
-    if (gameScore.firstPlayerScore === 5 || gameScore.secondPlayerScore === 5) {
+    if (
+      gameScore.firstPlayerScore === 10 ||
+      gameScore.secondPlayerScore === 10
+    ) {
       setGameScore(initialScoreState);
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
@@ -198,19 +200,29 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         ballStepY: getArrayRandomElement([-1, 1]),
       });
       setIsGameStarted(false);
+    } else if (
+      gameScore.firstPlayerScore !== 0 ||
+      gameScore.secondPlayerScore !== 0
+    ) {
+      setBallState({
+        ...initialBallState,
+        ballStepX: getArrayRandomElement([-2, 2]),
+        ballStepY: getArrayRandomElement([-1, 1]),
+      });
+      setIsGamePaused(true);
+      setTimeout(() => setIsGamePaused(false), 1000);
     }
   }, [gameScore, pokemonOne, pokemonTwo]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
-      {isGameStarted && (
-        <Camera
-          onSetPlayer1Coord={setPlayer1Coord}
-          onSetPlayer2Coord={setPlayer2Coord}
-        />
-      )}
+      <Camera
+        onSetPlayer1Coord={setPlayer1Coord}
+        onSetPlayer2Coord={setPlayer2Coord}
+      />
       {winner && <Modal winner={winner} />}
+
       <Link to="/">
         <button className="button-close-game">Close game</button>
       </Link>
@@ -243,6 +255,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         }`}
         onClick={() => {
           setIsGameStarted(true);
+          setIsGamePaused(false);
           setWinner(null);
         }}
       >
