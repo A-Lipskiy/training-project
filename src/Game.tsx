@@ -186,7 +186,10 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   }, [ballState, player1Coord, player2Coord]);
 
   useEffect(() => {
-    if (gameScore.firstPlayerScore === 3 || gameScore.secondPlayerScore === 3) {
+    if (
+      gameScore.firstPlayerScore === 10 ||
+      gameScore.secondPlayerScore === 10
+    ) {
       setGameScore(initialScoreState);
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
