@@ -7,6 +7,7 @@ import { HALF_CARD_SIZE } from './Game';
 type Props = {
   onSetPlayer1Coord: (y: number) => void;
   onSetPlayer2Coord: (y: number) => void;
+  isGameStarted: boolean;
 };
 const model = poseDetection.SupportedModels.MoveNet;
 const moveNetConfig: MoveNetModelConfig = {
@@ -28,6 +29,7 @@ function calculatePlayerCoord(y: number): number {
 export function Camera({
   onSetPlayer1Coord,
   onSetPlayer2Coord,
+  isGameStarted,
 }: Props): JSX.Element {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
@@ -49,14 +51,14 @@ export function Camera({
         maxPoses: 1,
         flipHorizontal: false,
       });
+      if (isGameStarted)
+        if (poses.length !== 0) {
+          const player1Y = poses[0].keypoints[9].y;
+          const player2Y = poses[0].keypoints[10].y;
 
-      if (poses.length !== 0) {
-        const player1Y = poses[0].keypoints[9].y;
-        const player2Y = poses[0].keypoints[10].y;
-
-        onSetPlayer1Coord(calculatePlayerCoord(player1Y));
-        onSetPlayer2Coord(calculatePlayerCoord(player2Y));
-      }
+          onSetPlayer1Coord(calculatePlayerCoord(player1Y));
+          onSetPlayer2Coord(calculatePlayerCoord(player2Y));
+        }
     }
 
     const interval = setInterval(() => {
@@ -66,7 +68,7 @@ export function Camera({
     return () => {
       clearInterval(interval);
     };
-  }, [detector, onSetPlayer1Coord, onSetPlayer2Coord, stream]);
+  }, [detector, onSetPlayer1Coord, onSetPlayer2Coord, isGameStarted, stream]);
 
   useEffect(() => {
     return () => detector?.dispose();

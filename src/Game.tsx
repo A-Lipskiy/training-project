@@ -58,6 +58,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [player2Coord, setPlayer2Coord] = useState(initialCardsState);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [winner, setWinner] = useState<string | null>();
+  let timeout: NodeJS.Timeout;
 
   useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
@@ -165,6 +166,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             secondPlayerScore: prevState.secondPlayerScore + 1,
           };
         });
+        setBallState(initialBallState);
+        setIsGameStarted(false);
       }
     } else if (ballX === 100) {
       if (
@@ -177,12 +180,17 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
             firstPlayerScore: prevState.firstPlayerScore + 1,
           };
         });
+        setBallState(initialBallState);
+        setIsGameStarted(false);
       }
     }
   }, [ballState, player1Coord, player2Coord]);
 
   useEffect(() => {
-    if (gameScore.firstPlayerScore === 5 || gameScore.secondPlayerScore === 5) {
+    if (
+      gameScore.firstPlayerScore === 10 ||
+      gameScore.secondPlayerScore === 10
+    ) {
       setGameScore(initialScoreState);
       setPlayer1Coord(initialCardsState);
       setPlayer2Coord(initialCardsState);
@@ -198,18 +206,28 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         ballStepY: getArrayRandomElement([-1, 1]),
       });
       setIsGameStarted(false);
+    } else if (
+      gameScore.firstPlayerScore !== 0 ||
+      gameScore.secondPlayerScore !== 0
+    ) {
+      setBallState({
+        ...initialBallState,
+        ballStepX: getArrayRandomElement([-2, 2]),
+        ballStepY: getArrayRandomElement([-1, 1]),
+      });
+      setIsGameStarted(false);
+      setTimeout(() => setIsGameStarted(true), 1000);
     }
-  }, [gameScore, pokemonOne, pokemonTwo]);
+  }, [gameScore, pokemonOne, pokemonTwo, winner]);
 
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
-      {isGameStarted && (
-        <Camera
-          onSetPlayer1Coord={setPlayer1Coord}
-          onSetPlayer2Coord={setPlayer2Coord}
-        />
-      )}
+      <Camera
+        onSetPlayer1Coord={setPlayer1Coord}
+        onSetPlayer2Coord={setPlayer2Coord}
+        isGameStarted={isGameStarted}
+      />
       {winner && <Modal winner={winner} />}
       <Link to="/">
         <button className="button-close-game">Close game</button>
@@ -242,8 +260,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
           !isGameStarted ? 'button-visible' : ''
         }`}
         onClick={() => {
-          setIsGameStarted(true);
           setWinner(null);
+          setIsGameStarted(true);
         }}
       >
         Start Game
