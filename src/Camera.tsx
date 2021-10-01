@@ -15,6 +15,16 @@ const moveNetConfig: MoveNetModelConfig = {
 const THREASHOLD = 50;
 const MAX_VALUE = 400;
 
+function calculatePlayerCoord(y: number): number {
+  const newPlayerCoord = Math.floor(
+    ((y - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
+      (100 - HALF_CARD_SIZE * 2)
+  );
+
+  if (newPlayerCoord < HALF_CARD_SIZE) return HALF_CARD_SIZE;
+  else if (newPlayerCoord > 100 - HALF_CARD_SIZE) return 100 - HALF_CARD_SIZE;
+  else return newPlayerCoord;
+}
 export function Camera({
   onSetPlayer1Coord,
   onSetPlayer2Coord,
@@ -44,24 +54,8 @@ export function Camera({
         const player1Y = poses[0].keypoints[9].y;
         const player2Y = poses[0].keypoints[10].y;
 
-        const newPlayer1Coord = Math.floor(
-          ((player1Y - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
-            (100 - HALF_CARD_SIZE * 2)
-        );
-        const newPlayer2Coord = Math.floor(
-          ((player2Y - THREASHOLD) / (MAX_VALUE - 2 * THREASHOLD)) *
-            (100 - HALF_CARD_SIZE * 2)
-        );
-
-        if (newPlayer1Coord < HALF_CARD_SIZE) onSetPlayer1Coord(HALF_CARD_SIZE);
-        else if (newPlayer1Coord > 100 - HALF_CARD_SIZE)
-          onSetPlayer1Coord(100 - HALF_CARD_SIZE);
-        else onSetPlayer1Coord(newPlayer1Coord);
-
-        if (newPlayer2Coord < HALF_CARD_SIZE) onSetPlayer2Coord(HALF_CARD_SIZE);
-        else if (newPlayer2Coord > 100 - HALF_CARD_SIZE)
-          onSetPlayer2Coord(100 - HALF_CARD_SIZE);
-        else onSetPlayer2Coord(newPlayer2Coord);
+        onSetPlayer1Coord(calculatePlayerCoord(player1Y));
+        onSetPlayer2Coord(calculatePlayerCoord(player2Y));
       }
     }
 
