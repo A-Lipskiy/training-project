@@ -59,6 +59,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGamePaused, setIsGamePaused] = useState(false);
   const [winner, setWinner] = useState<string | null>();
+  const [isRenderCamera, setIsRenderCamera] = useState(true);
 
   useEffect(() => {
     let firstPlayerInt: TimeoutResult = null;
@@ -112,18 +113,22 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         setWinner(null);
       }
     };
-
+    if (!isRenderCamera) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+    }
     document.addEventListener('keydown', handleStartGame);
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
+
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
       document.removeEventListener('keydown', handleStartGame);
 
       handleKeyUp();
     };
-  }, [isGameStarted]);
+  }, [isGameStarted, isRenderCamera]);
 
   useEffect(() => {
     if (!isGameStarted || isGamePaused) return;
@@ -217,11 +222,21 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
   if (pokemonOne == '' || pokemonTwo == '') return <Redirect to="/" />;
   return (
     <div className="page-wrapper">
-      <Camera
-        onSetPlayer1Coord={setPlayer1Coord}
-        onSetPlayer2Coord={setPlayer2Coord}
-      />
-      {winner && <Modal winner={winner} />}
+      <label className="label-enable-camera">
+        Enable camera:
+        <input
+          type="checkbox"
+          checked={isRenderCamera}
+          onClick={() => setIsRenderCamera(!isRenderCamera)}
+        />
+      </label>
+      {isRenderCamera && (
+        <Camera
+          onSetPlayer1Coord={setPlayer1Coord}
+          onSetPlayer2Coord={setPlayer2Coord}
+        />
+      )}
+      {!isGameStarted && <Modal winner={winner ? winner : ''} />}
 
       <Link to="/">
         <button className="button-close-game">Close game</button>

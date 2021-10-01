@@ -174,7 +174,7 @@
   display: block;
 }
 .modal_content {
-  margin: 15% auto;
+  margin: 10% auto;
   border: none;
   z-index: 2;
   background-color: transparent;
@@ -184,16 +184,33 @@
   font: 2vmin Helvetica, Sans-Serif;
 }
 
-.modal-text {
-  padding-top: 15%;
+.modal-headers {
+  padding-top: 3%;
 }
+
 .camera {
   position: absolute;
-  top: 10vmin;
+  top: 26vmin;
   left: 5vmin;
+  z-index: 10;
   width: 350px;
   height: 300px;
-  z-index: 10;
   object-fit: cover;
   background-color: white;
+}
+.label-camera {
+  position: absolute;
+  top: 23vmin;
+  left: 10vmin;
+  width: 20vmin;
+}
+.label-enable-camera {
+  position: absolute;
+  top: 20vmin;
+  left: 10vmin;
+  display: block;
+  width: 20vmin;
+}
+.display-none {
+  display: none;
 }
