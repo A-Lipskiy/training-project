@@ -34,6 +34,7 @@ export function Camera({
   const [detector, setDetector] = useState<poseDetection.PoseDetector | null>(
     null
   );
+  const [isCameraOnScreen, setIsCameraOnScreen] = useState(true);
 
   useEffect(() => {
     const camera = cameraRef.current;
@@ -101,5 +102,22 @@ export function Camera({
     initAI();
   }, []);
 
-  return <video muted autoPlay className="camera" ref={cameraRef}></video>;
+  return (
+    <div>
+      <label className="label-camera">
+        Show camera:
+        <input
+          type="checkbox"
+          checked={isCameraOnScreen}
+          onClick={() => setIsCameraOnScreen(!isCameraOnScreen)}
+        />
+      </label>
+      <video
+        muted
+        autoPlay
+        className={`camera ${!isCameraOnScreen ? 'display-none' : ''}`}
+        ref={cameraRef}
+      ></video>
+    </div>
+  );
 }
