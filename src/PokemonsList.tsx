@@ -3,7 +3,7 @@ import { useIntersectionObserver } from './useIntersectionObserver';
 import { useRef } from 'react';
 import { useFetchPokemonsPages } from './useFetchPokemonsPages';
 
-export const truePageSize = 10;
+export const POKEMON_LIST_PAGE_SIZE = 10;
 
 type Props = {
   selectedPokemons: [string, string];

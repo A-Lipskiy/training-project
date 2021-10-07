@@ -1,7 +1,7 @@
 import type { PokeResponse } from './pokemonTypes.js';
 import { useQuery, UseQueryResult } from 'react-query';
 
-const guard = (rJSON: unknown): rJSON is PokeResponse =>
+const isPokeResponse = (rJSON: unknown): rJSON is PokeResponse =>
   typeof rJSON === 'object' &&
   rJSON !== null &&
   'name' in rJSON &&
@@ -16,7 +16,7 @@ async function fetchPokemon(name: string) {
   if (response.text.toString() === '') throw new Error('Response is empty');
 
   const rJSON: unknown = await response.json();
-  if (guard(rJSON))
+  if (isPokeResponse(rJSON))
     return {
       name: rJSON.name,
       height: rJSON.height,

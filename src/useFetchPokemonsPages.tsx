@@ -1,8 +1,8 @@
 import type { PokeListResponse } from './pokemonTypes.js';
-import { truePageSize } from './PokemonsList';
+import { POKEMON_LIST_PAGE_SIZE } from './PokemonsList';
 import { useInfiniteQuery, UseInfiniteQueryResult } from 'react-query';
 
-const guard = (rJSON: unknown): rJSON is PokeListResponse =>
+const isPokeListResponse = (rJSON: unknown): rJSON is PokeListResponse =>
   typeof rJSON === 'object' &&
   rJSON !== null &&
   'count' in rJSON &&
@@ -13,15 +13,15 @@ async function fetchPokemonsList(
 ): Promise<PokeListResponse & { pageNumber: number }> {
   const response = await fetch(
     `https://pokeapi.co/api/v2/pokemon?offset=${
-      pageNumber * truePageSize
-    }&limit=${truePageSize}`
+      pageNumber * POKEMON_LIST_PAGE_SIZE
+    }&limit=${POKEMON_LIST_PAGE_SIZE}`
   );
 
   if (!response.ok) throw new Error('Fetching error');
   if (response.text.toString() === '') throw new Error('Response is empty');
 
   const rJSON: unknown = await response.json();
-  if (guard(rJSON)) {
+  if (isPokeListResponse(rJSON)) {
     return {
       count: rJSON.count,
       results: rJSON.results,
@@ -43,7 +43,8 @@ export const useFetchPokemonsPages = (): UseInfiniteQueryResult<
   useInfiniteQuery(['pokemon-list'], queryFunction, {
     getNextPageParam: (lastPage) => {
       const page = lastPage.pageNumber + 1;
-      if (page * truePageSize < lastPage.count) return lastPage.pageNumber + 1;
-      return undefined;
+      return page * POKEMON_LIST_PAGE_SIZE < lastPage.count
+        ? lastPage.pageNumber + 1
+        : undefined;
     },
   });
