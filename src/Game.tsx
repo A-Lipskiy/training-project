@@ -114,6 +114,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     };
     if (!isRenderCamera) {
+      setPlayer1Coord(initialCardsState);
+      setPlayer2Coord(initialCardsState);
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keyup', handleKeyUp);
       return () => {
