@@ -109,7 +109,7 @@ export function Camera({
         <input
           type="checkbox"
           checked={isCameraOnScreen}
-          onClick={() => setIsCameraOnScreen(!isCameraOnScreen)}
+          onChange={() => setIsCameraOnScreen(!isCameraOnScreen)}
         />
       </label>
       <video

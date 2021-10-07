@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function PokemonCard({ name, onClick, isSelected }: Props): JSX.Element {
-  const { isLoading, pokemon } = useFetchPokemon(name);
+  const { isLoading, data: pokemon } = useFetchPokemon(name);
   if (isLoading || !pokemon)
     return (
       <div className="card-wrapper">

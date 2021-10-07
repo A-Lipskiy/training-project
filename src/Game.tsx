@@ -227,7 +227,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         <input
           type="checkbox"
           checked={isRenderCamera}
-          onClick={() => setIsRenderCamera(!isRenderCamera)}
+          onChange={() => setIsRenderCamera(!isRenderCamera)}
         />
       </label>
       {isRenderCamera && (
