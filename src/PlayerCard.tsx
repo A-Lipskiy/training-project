@@ -12,7 +12,7 @@ export function PlayerCard({
   pokemonName,
   playerCardType,
 }: Props): JSX.Element {
-  const { isLoading, pokemon } = useFetchPokemon(pokemonName);
+  const { isLoading, data: pokemon } = useFetchPokemon(pokemonName);
   if (isLoading || !pokemon)
     return (
       <div className={`${playerCardType}-card`} style={{ top: `${y}%` }}>

@@ -1,26 +1,21 @@
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect } from 'react';
 
 export function useIntersectionObserver(
   elementRef: RefObject<Element>,
-  onIntersection: () => void,
+  onIntersection: () => unknown,
   threshold = 0
 ): void {
-  const [entry, setEntry] = useState<IntersectionObserverEntry>();
-
   useEffect(() => {
     const node = elementRef?.current;
     if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => setEntry(entry), {
-      threshold,
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && onIntersection(),
+      {
+        threshold,
+      }
+    );
     observer.observe(node);
 
     return () => observer.disconnect();
-  }, [elementRef, threshold]);
-
-  useEffect(() => {
-    if (entry?.isIntersecting) {
-      onIntersection();
-    }
-  }, [entry?.isIntersecting, onIntersection]);
+  }, [elementRef, threshold, onIntersection]);
 }

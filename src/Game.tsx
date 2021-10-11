@@ -114,6 +114,8 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
       }
     };
     if (!isRenderCamera) {
+      setPlayer1Coord(initialCardsState);
+      setPlayer2Coord(initialCardsState);
       document.addEventListener('keydown', handleKeyDown);
       document.addEventListener('keyup', handleKeyUp);
       return () => {
@@ -227,7 +229,7 @@ export function Game({ pokemonOne, pokemonTwo }: Props): JSX.Element {
         <input
           type="checkbox"
           checked={isRenderCamera}
-          onClick={() => setIsRenderCamera(!isRenderCamera)}
+          onChange={() => setIsRenderCamera(!isRenderCamera)}
         />
       </label>
       {isRenderCamera && (

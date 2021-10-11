@@ -1,13 +1,9 @@
 import { PokemonCard } from './PokemonCard';
 import { useIntersectionObserver } from './useIntersectionObserver';
-import { useState, useRef, useCallback } from 'react';
+import { useRef } from 'react';
 import { useFetchPokemonsPages } from './useFetchPokemonsPages';
-import type { PokeListResponse } from './pokemonTypes.js';
 
-export const truePageSize = 10;
-
-const initialPageCount =
-  Math.floor((Math.round(window.innerHeight / 300) + 1) / truePageSize) + 1;
+export const POKEMON_LIST_PAGE_SIZE = 10;
 
 type Props = {
   selectedPokemons: [string, string];
@@ -18,23 +14,15 @@ export function PokemonsList({
   selectedPokemons,
   onChange,
 }: Props): JSX.Element {
-  const [curentLastPage, setCurentLastPage] = useState(initialPageCount);
-  const [pagesToUpload, setPagesToUpload] = useState<number[]>([]);
-  const [pages, setPages] = useState<PokeListResponse[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const updatePageCount = useCallback(() => {
-    setCurentLastPage((page) => page + 1);
-  }, []);
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useFetchPokemonsPages();
 
-  useIntersectionObserver(bottomRef, updatePageCount, 0);
-
-  useFetchPokemonsPages(
-    pagesToUpload,
-    setPages,
-    curentLastPage,
-    pages,
-    setPagesToUpload
+  useIntersectionObserver(
+    bottomRef,
+    () => !isFetchingNextPage && fetchNextPage(),
+    0
   );
 
   function handleClick(name: string): void {
@@ -50,7 +38,7 @@ export function PokemonsList({
     }
     onChange(newSelectedPokemons);
   }
-  const pokemons = pages
+  const pokemons = data?.pages
     .flatMap((pokemon) => pokemon.results)
     .map(({ name }) => (
       <PokemonCard
@@ -61,7 +49,7 @@ export function PokemonsList({
       />
     ));
 
-  if (pages.length * truePageSize < pages[0]?.count || pages[0] === undefined) {
+  if (hasNextPage) {
     return (
       <div className="pokemon-list-wrapper">
         {pokemons}
